@@ -1,0 +1,13 @@
+rootProject.name = 'bank'
+
+include 'common'
+include 'accounts'
+include 'cash'
+include 'transfer'
+include 'blocker'
+include 'exchange-generator'
+include 'exchange'
+include 'notification'
+include 'front-ui'
+include 'gateway'
+

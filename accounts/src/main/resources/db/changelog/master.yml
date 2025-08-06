@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-account-table-0.1.sql
+  - include:
+      file: db/changelog/changeset/create-account-balance-table-0.2.sql
+  - include:
+      file: db/changelog/changeset/create-account-contact-table-0.3.sql
