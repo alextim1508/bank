@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-notifications-table-0.1.sql
+  - include:
+      file: db/changelog/changeset/create-notification-delivery-log-table-0.2.sql

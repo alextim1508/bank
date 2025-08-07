@@ -3,6 +3,7 @@ package com.alextim.bank.notification.controller;
 import com.alextim.bank.common.dto.ApiResponse;
 import com.alextim.bank.common.dto.notification.NotificationRequest;
 import com.alextim.bank.common.dto.notification.NotificationResponse;
+import com.alextim.bank.notification.service.NotificationOutboxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class NotificationController {
 
+    private final NotificationOutboxService notificationOutboxService;
+
     @PostMapping
     public ResponseEntity<ApiResponse<NotificationResponse>> createNotification(@RequestBody NotificationRequest request) {
-        log.info("Incoming request for creating notification");
+        log.info("Incoming request for creating notification: {}", request);
 
-        log.info("request: {}", request);
+        notificationOutboxService.save(request);
 
         return ResponseEntity.ok(ApiResponse.success(new NotificationResponse(request.getLogin())));
     }
