@@ -1,53 +1,5 @@
-server:
-  port: 8088
-
 spring:
   application:
-    name: notification-service
+    name: notification
   config:
-    import: classpath:application-common.yml
-
-  datasource:
-    url: jdbc:postgresql://localhost:5439/notification-db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5439/notification-db
-    user: postgres
-    password: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  cache:
-    type: caffeine
-    cache-names: accountContacts
-    caffeine:
-      spec: maximumSize=1000,expireAfterWrite=10m
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            client-id: notification-client
-            client-secret: VMZHtTUfL9QeQD2KTdK2UWJrc13weZE6
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: your-email@gmail.com
-    password: your-app-password
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+    import: configserver:http://localhost:8888

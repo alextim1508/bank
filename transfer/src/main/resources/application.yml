@@ -1,35 +1,5 @@
-server:
-  port: 8086
-
 spring:
   application:
-    name: transfer-service
+    name: transfer
   config:
-    import: classpath:application-common.yml
-
-  datasource:
-    url: jdbc:postgresql://localhost:5436/transfer-db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5436/transfer-db
-    user: postgres
-    password: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            client-id: transfer-client
-            client-secret: WTnAZo7Q75TJBEZiZ4EvjAsI7ZuB0GC2
+    import: configserver:http://localhost:8888

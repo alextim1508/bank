@@ -6,6 +6,8 @@ jar {
 dependencies {
     implementation(project(":common"))
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
 
 

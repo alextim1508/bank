@@ -1,17 +1,5 @@
-server:
-  port: 8087
-
 spring:
   application:
-    name: exchange-generator-service
+    name: exchange-generator
   config:
-    import: classpath:application-common.yml
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            token-url: http://localhost:9090/realms/bank/protocol/openid-connect/token
-            client-id: exchange-generator-client
-            client-secret: HlsMefVUQWzRUZac1sxSCOhHSRM46SnS
+    import: configserver:http://localhost:8888

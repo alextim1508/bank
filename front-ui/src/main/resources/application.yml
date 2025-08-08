@@ -1,19 +1,5 @@
-server:
-  port: 8085
-  forward-headers-strategy: native
-
 spring:
   application:
-    name: front-ui-service
+    name: front-ui
   config:
-    import: classpath:application-common.yml
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            client-id: front-client
-            client-secret: iAwljpTepiIUNtf3GsfcPWv42VG4oSzX
-
-
+    import: configserver:http://localhost:8888

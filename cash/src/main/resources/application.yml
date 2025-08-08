@@ -1,35 +1,5 @@
-server:
-  port: 8083
-
 spring:
   application:
-    name: cash-service
+    name: cash
   config:
-    import: classpath:application-common.yml
-
-  datasource:
-    url: jdbc:postgresql://localhost:5435/cash-db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5435/cash-db
-    user: postgres
-    password: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            client-id: cash-client
-            client-secret: 94yl7Kb9fgGG95ROVdvzKmGHse2web7g
+    import: configserver:http://localhost:8888

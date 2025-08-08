@@ -1,47 +1,5 @@
-server:
-  port: 8084
-
 spring:
   application:
-    name: exchange-service
+    name: exchange
   config:
-    import: classpath:application-common.yml
-
-  datasource:
-    url: jdbc:postgresql://localhost:5438/exchange-db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-
-  sql:
-    init:
-      mode: always
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5438/exchange-db
-    user: postgres
-    password: postgres
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-
-  cache:
-    type: caffeine
-    cache-names: currencies
-    caffeine:
-      spec: maximumSize=500,expireAfterWrite=10m
-
-  security:
-    oauth2:
-      client:
-        registration:
-          bank:
-            client-id: exchange-client
-            client-secret: HNY8Fym1iF9LsprSS9v7YvErYfJKEYmp
-
-
+    import: configserver:http://localhost:8888
