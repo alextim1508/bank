@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.alextim.bank.common.client.util.NotificationClientUtils.sendNotification;
+import static com.alextim.bank.common.constant.AggregateType.ACCOUNT;
+import static com.alextim.bank.common.constant.EventType.ACCOUNT_BALANCE_UPDATED;
 
 @Service
 @RequiredArgsConstructor
@@ -140,9 +142,9 @@ public class BalanceServiceImpl implements BalanceService {
 
             balanceRepository.save(balance);
 
-            var notificationRequestDto = new NotificationRequest(account.getLogin(), "Balance updated " + balance.getAmount());
-            sendNotification(notificationServiceClient, notificationRequestDto);
-
+            sendNotification(notificationServiceClient,
+                    new NotificationRequest(ACCOUNT, ACCOUNT_BALANCE_UPDATED, account.getLogin(),
+                            "Balance updated " + balance.getAmount()));
         }
 
         log.info("Successfully unfrozen {} balances for login: {}", lockedBalances.size(), login);

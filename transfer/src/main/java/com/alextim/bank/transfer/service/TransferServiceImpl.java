@@ -23,6 +23,9 @@ import java.util.List;
 import static com.alextim.bank.common.client.util.BalanceClientUtils.*;
 import static com.alextim.bank.common.client.util.ExchangeClientUtils.convertAmount;
 import static com.alextim.bank.common.client.util.NotificationClientUtils.sendNotification;
+import static com.alextim.bank.common.constant.AggregateType.TRANSFER;
+import static com.alextim.bank.common.constant.EventType.BALANCE_TRANSFERRED_EXTERNAL;
+import static com.alextim.bank.common.constant.EventType.BALANCE_TRANSFERRED_INTERNAL;
 import static com.alextim.bank.common.constant.OperationType.*;
 import static com.alextim.bank.transfer.constant.TransferOperationType.*;
 
@@ -111,7 +114,8 @@ public class TransferServiceImpl implements TransferService {
         log.info("Saved transfer operation: {}", savedTransferOperation);
 
         sendNotification(notificationServiceClient,
-                new NotificationRequest(request.getLogin(), "Перевод на свой счёт выполнен"));
+                new NotificationRequest(TRANSFER, BALANCE_TRANSFERRED_INTERNAL, request.getLogin(),
+                        "Перевод на свой счёт выполнен"));
     }
 
     @Override
@@ -202,9 +206,9 @@ public class TransferServiceImpl implements TransferService {
         log.info("Saved transfer operation: {}", savedTransferOperation);
 
         sendNotification(notificationServiceClient,
-                new NotificationRequest(request.getFromLogin(), "Межсчетный перевод выполнен"));
+                new NotificationRequest(TRANSFER, BALANCE_TRANSFERRED_EXTERNAL, request.getFromLogin(), "Межсчетный перевод выполнен"));
 
         sendNotification(notificationServiceClient,
-                new NotificationRequest(request.getToLogin(), "Межсчетный перевод выполнен"));
+                new NotificationRequest(TRANSFER, BALANCE_TRANSFERRED_EXTERNAL, request.getToLogin(), "Межсчетный перевод выполнен"));
     }
 }

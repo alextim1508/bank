@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import static com.alextim.bank.account.constant.ContactType.EMAIL;
 import static com.alextim.bank.account.constant.ContactType.TELEGRAM;
 import static com.alextim.bank.common.client.util.NotificationClientUtils.sendNotification;
+import static com.alextim.bank.common.constant.AggregateType.ACCOUNT;
+import static com.alextim.bank.common.constant.EventType.*;
 
 @Service
 @RequiredArgsConstructor
@@ -82,7 +84,8 @@ public class AccountServiceImpl implements AccountService {
         AccountFullResponse response = accountMapper.toFullDto(account, accountBalanceResponse);
 
         sendNotification(notificationServiceClient,
-                new NotificationRequest(savedAccount.getLogin(), "Your account has been successfully created"));
+                new NotificationRequest(ACCOUNT, ACCOUNT_CREATED, savedAccount.getLogin(),
+                        "Your account has been successfully created"));
 
         log.debug("Final response payload for login {}: {}", response.getLogin(), response);
         return response;
@@ -136,7 +139,8 @@ public class AccountServiceImpl implements AccountService {
         AccountFullResponse response = accountMapper.toFullDto(updatedAccount, accountBalanceResponse);
 
         sendNotification(notificationServiceClient,
-                new NotificationRequest(updatedAccount.getLogin(), "Your account has been successfully updated"));
+                new NotificationRequest(ACCOUNT, ACCOUNT_UPDATED, updatedAccount.getLogin(),
+                        "Your account has been successfully updated"));
 
         log.debug("Final response payload for login {}: {}", response.getLogin(), response);
         return response;
@@ -173,7 +177,9 @@ public class AccountServiceImpl implements AccountService {
                 currencyService.getCurrencies(), account.getBalances());
         AccountFullResponse response = accountMapper.toFullDto(updatedAccount, accountBalanceResponse);
 
-        sendNotification(notificationServiceClient, new NotificationRequest(updatedAccount.getLogin(), "Your account has been successfully updated"));
+        sendNotification(notificationServiceClient,
+                new NotificationRequest(ACCOUNT, ACCOUNT_PASSWORD_CHANGED, updatedAccount.getLogin(),
+                        "Your account has been successfully updated"));
 
         log.debug("Final response payload for login {}: {}", response.getLogin(), response);
         return response;

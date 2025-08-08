@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.alextim.bank.common.client.util.NotificationClientUtils.sendNotification;
+import static com.alextim.bank.common.constant.AggregateType.ACCOUNT;
+import static com.alextim.bank.common.constant.EventType.ACCOUNT_LOGIN;
+import static com.alextim.bank.common.constant.EventType.ACCOUNT_LOGIN_FAILED;
 
 @Service
 @RequiredArgsConstructor
@@ -45,12 +48,16 @@ public class AuthServiceImpl implements AuthService {
             String refreshToken = jwtService.generateRefreshToken(request.getLogin());
             log.info("Token generated successfully");
 
-            sendNotification(notificationServiceClient, new NotificationRequest(request.getLogin(), "successful login"));
+            sendNotification(notificationServiceClient,
+                    new NotificationRequest(ACCOUNT, ACCOUNT_LOGIN, request.getLogin(),
+                            "successful login"));
 
             return new TokenPairResponse(accessToken, refreshToken);
         }
 
-        sendNotification(notificationServiceClient, new NotificationRequest(request.getLogin(), "failed login"));
+        sendNotification(notificationServiceClient,
+                new NotificationRequest(ACCOUNT, ACCOUNT_LOGIN_FAILED, request.getLogin(),
+                        "failed login"));
 
         throw new BadCredentialsException(request.getLogin());
     }

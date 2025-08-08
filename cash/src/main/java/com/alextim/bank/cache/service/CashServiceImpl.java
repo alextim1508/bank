@@ -19,6 +19,10 @@ import java.util.List;
 
 import static com.alextim.bank.cache.constant.CashOperationType.*;
 import static com.alextim.bank.common.client.util.BalanceClientUtils.*;
+import static com.alextim.bank.common.client.util.NotificationClientUtils.sendNotification;
+import static com.alextim.bank.common.constant.AggregateType.CASH_OPERATION;
+import static com.alextim.bank.common.constant.EventType.BALANCE_CREDITED;
+import static com.alextim.bank.common.constant.EventType.BALANCE_DEBITED;
 import static com.alextim.bank.common.constant.OperationType.*;
 
 @Service
@@ -76,7 +80,9 @@ public class CashServiceImpl implements CashService {
                 .build());
         log.info("Saved cash operation: {}", savedCashOperation);
 
-        notificationServiceClient.sendNotification(new NotificationRequest(request.getLogin(), "Счёт пополнен"));
+        sendNotification(notificationServiceClient,
+                new NotificationRequest(CASH_OPERATION, BALANCE_CREDITED, request.getLogin(),
+                        "Счёт пополнен"));
     }
 
 
@@ -120,6 +126,7 @@ public class CashServiceImpl implements CashService {
                 .build());
         log.info("Saved cash operation: {}", savedCashOperation);
 
-        notificationServiceClient.sendNotification(new NotificationRequest(request.getLogin(), "Средства сняты"));
+        sendNotification(notificationServiceClient, new NotificationRequest(CASH_OPERATION, BALANCE_DEBITED,
+                request.getLogin(), "Средства сняты"));
     }
 }
