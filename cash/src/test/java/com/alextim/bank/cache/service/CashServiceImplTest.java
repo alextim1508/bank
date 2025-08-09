@@ -6,50 +6,51 @@ import com.alextim.bank.common.client.AccountBalanceServiceClient;
 import com.alextim.bank.common.client.BlockerServiceClient;
 import com.alextim.bank.common.client.NotificationServiceClient;
 import com.alextim.bank.common.dto.ApiResponse;
-import com.alextim.bank.common.dto.balance.CreditBalanceRequest;
-import com.alextim.bank.common.dto.balance.CreditBalanceResponse;
-import com.alextim.bank.common.dto.balance.DebitBalanceRequest;
-import com.alextim.bank.common.dto.balance.DebitBalanceResponse;
+import com.alextim.bank.common.dto.balance.*;
 import com.alextim.bank.common.dto.blocker.OperationCheckRequest;
 import com.alextim.bank.common.dto.blocker.OperationCheckResponse;
 import com.alextim.bank.common.dto.cash.DepositRequest;
 import com.alextim.bank.common.dto.cash.WithdrawRequest;
+import com.alextim.bank.common.dto.notification.NotificationRequest;
+import com.alextim.bank.common.dto.notification.NotificationResponse;
 import com.alextim.bank.common.exception.AccountBalanceServiceClientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.alextim.bank.cache.constant.CashOperationType.DEPOSIT;
 import static com.alextim.bank.cache.constant.CashOperationType.WITHDRAW;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {CashServiceImpl.class})
+@ActiveProfiles("test")
 class CashServiceImplTest {
 
-    @Mock
+    @Autowired
+    private CashServiceImpl cashService;
+
+    @MockitoBean
     private AccountBalanceServiceClient accountBalanceServiceClient;
 
-    @Mock
+    @MockitoBean
     private BlockerServiceClient blockerServiceClient;
 
-    @Mock
+    @MockitoBean
     private NotificationServiceClient notificationServiceClient;
 
-    @Mock
+    @MockitoBean
     private CashRepository cashRepository;
 
-    @Mock
+    @MockitoBean
     private ATMService atmService;
-
-    @InjectMocks
-    private CashServiceImpl cashService;
 
     private DepositRequest depositRequest;
     private WithdrawRequest withdrawRequest;
@@ -67,6 +68,10 @@ class CashServiceImplTest {
                 .currency("RUB")
                 .amount(new BigDecimal("1000"))
                 .build();
+
+        when(notificationServiceClient.sendNotification(any(NotificationRequest.class)))
+                .thenReturn(ResponseEntity.ok(ApiResponse.success(new NotificationResponse("ivan"))));
+
     }
 
     @Test
@@ -76,6 +81,10 @@ class CashServiceImplTest {
 
         when(accountBalanceServiceClient.creditBalance(any(CreditBalanceRequest.class)))
                 .thenReturn(ResponseEntity.ok(ApiResponse.success(new CreditBalanceResponse("ivan"))));
+
+
+        when(accountBalanceServiceClient.approve(any(ApproveOperationRequest.class)))
+                .thenReturn(ResponseEntity.ok(ApiResponse.success(new ApproveOperationResponse(List.of("ivan")))));
 
         cashService.deposit(depositRequest);
 
@@ -105,6 +114,10 @@ class CashServiceImplTest {
 
         when(accountBalanceServiceClient.debitBalance(any(DebitBalanceRequest.class)))
                 .thenReturn(ResponseEntity.ok(ApiResponse.success(new DebitBalanceResponse("ivan"))));
+
+        when(accountBalanceServiceClient.approve(any(ApproveOperationRequest.class)))
+                .thenReturn(ResponseEntity.ok(ApiResponse.success(new ApproveOperationResponse(List.of("ivan")))));
+
 
         doNothing().when(atmService).withdrawCash(any());
 

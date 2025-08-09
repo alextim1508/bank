@@ -1,4 +1,4 @@
-package com.alextim.bank.account.controller;
+package com.alextim.bank.notification.service;
 
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

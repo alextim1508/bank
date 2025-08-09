@@ -1,5 +1,3 @@
 spring:
   application:
     name: cash
-  config:
-    import: configserver:http://localhost:8888

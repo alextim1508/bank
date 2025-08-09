@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.*;
 })
 @EnableCaching
 @SpringBootTest(classes = {CachingCurrencyServiceImpl.class, CacheManager.class})
+@ActiveProfiles("test")
 public class CachingCurrencyServiceTest {
 
     @Autowired

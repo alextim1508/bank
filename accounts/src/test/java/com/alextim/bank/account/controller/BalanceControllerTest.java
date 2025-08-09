@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -62,7 +65,11 @@ class BalanceControllerTest extends AbstractControllerTestContainer {
     private AuthServiceClient authServiceClient;
 
     @MockitoBean
-    private OAuth2TokenClient oauth2TokenClient;
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     private Account account;
 

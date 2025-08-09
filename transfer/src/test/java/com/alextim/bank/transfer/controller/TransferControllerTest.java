@@ -9,24 +9,25 @@ import com.alextim.bank.common.dto.blocker.OperationCheckResponse;
 import com.alextim.bank.common.dto.exchange.ConversionRequest;
 import com.alextim.bank.common.dto.exchange.ConversionResponse;
 import com.alextim.bank.common.dto.notification.NotificationResponse;
-import com.alextim.bank.common.dto.transfer.InternalTransferRequest;
 import com.alextim.bank.transfer.repository.TransferOperationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +55,11 @@ public class TransferControllerTest extends AbstractControllerTestContainer {
     private AuthServiceClient authServiceClient;
 
     @MockitoBean
-    private OAuth2TokenClient oauth2TokenClient;
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     @BeforeEach
     public void setUp() {
@@ -176,7 +181,7 @@ public class TransferControllerTest extends AbstractControllerTestContainer {
                 .andExpect(jsonPath("$.status").value("ERROR"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.error.message").value("Validation failed"))
-                .andExpect(jsonPath("$.error.details").value("{login=[Sender login is required, {currency.code.invalid}]}"));
+                .andExpect(jsonPath("$.error.details").value("{login=[Sender login is required, Sender login must be between 4 and 20 characters]}"));
     }
 
     @Test
@@ -186,7 +191,7 @@ public class TransferControllerTest extends AbstractControllerTestContainer {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                         {
-                            "login": "user123",
+                            "login": "ivan",
                             "fromCurrency": "USD",
                             "toCurrency": "RUB",
                             "amount": -100
@@ -196,7 +201,7 @@ public class TransferControllerTest extends AbstractControllerTestContainer {
                 .andExpect(jsonPath("$.status").value("ERROR"))
                 .andExpect(jsonPath("$.data").doesNotExist())
                 .andExpect(jsonPath("$.error.message").value("Validation failed"))
-                .andExpect(jsonPath("$.error.details.amount").value("{amount=[Amount must be greater than zero], login=[{currency.code.invalid}]}"));
+                .andExpect(jsonPath("$.error.details").value("{amount=[Amount must be greater than zero]}"));
     }
 
     @Test

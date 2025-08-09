@@ -1,0 +1,36 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+
+  datasource:
+    url: jdbc:postgresql://localhost:5434/account-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.yml
+    url: jdbc:postgresql://localhost:5434/account-db
+    user: postgres
+    password: postgres
+
+  cache:
+    type: caffeine
+    cache-names: currencies
+    caffeine:
+      spec: maximumSize=1,expireAfterWrite=10m
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 5s
+
+sso:
+  client-registration-id: bank
+
+account:
+  balance:
+    lock-timeout-seconds: 2

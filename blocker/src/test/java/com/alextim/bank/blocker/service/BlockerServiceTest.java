@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -31,14 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @EnableConfigurationProperties(BlockerProperties.class)
-@TestPropertySource(properties = {
-        "blocker.max-amount=1000",
-        "blocker.max-operations=3",
-        "blocker.time-window-minutes=60",
-        "blocker.night.start-hour=23",
-        "blocker.night.end-hour=6"
-})
 @SpringBootTest(classes = {BlockerServiceImpl.class})
+@ActiveProfiles("test")
 class BlockerServiceTest {
 
     @MockitoBean
@@ -96,7 +91,7 @@ class BlockerServiceTest {
     void isSuspicious_ShouldReturnTrue_WhenHighAmount() {
         request = new OperationCheckRequest(
                 "ivan_ivanov",
-                new BigDecimal("1100"),
+                new BigDecimal("11000"),
                 OperationType.CREDIT,
                 LocalDateTime.of(20025, 7, 24, 12, 0));
 
@@ -178,7 +173,7 @@ class BlockerServiceTest {
     void isSuspicious_ShouldReturnTrue_WhenAccountLocked() {
         request = new OperationCheckRequest(
                 "ivan_ivanov",
-                new BigDecimal("1100"),
+                new BigDecimal("10000"),
                 OperationType.CREDIT,
                 LocalDateTime.of(20025, 7, 24, 6, 0));
 
@@ -206,7 +201,7 @@ class BlockerServiceTest {
     void isSuspicious_ShouldReturnTrue_WithMultipleReasons() {
         request = new OperationCheckRequest(
                 "ivan_ivanov",
-                new BigDecimal("1100"),
+                new BigDecimal("11000"),
                 OperationType.CREDIT,
                 LocalDateTime.of(20025, 7, 24, 6, 0));
 

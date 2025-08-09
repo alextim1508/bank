@@ -4,7 +4,7 @@ spring:
       enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5438/exchange-db
+    url: jdbc:postgresql://localhost:5437/suspicious-operation-db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -12,9 +12,22 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5438/exchange-db
+    url: jdbc:postgresql://localhost:5437/suspicious-operation-db
     user: postgres
     password: postgres
 
+  data:
+    redis:
+      port: 6380
+      host: localhost
 sso:
   client-registration-id: bank
+
+blocker:
+  max-amount: 10000
+  max-operations: 3
+  time-window-minutes: 60
+  night:
+    start-hour: 23
+    end-hour: 6
+

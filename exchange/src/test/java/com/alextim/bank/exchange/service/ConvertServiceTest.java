@@ -1,23 +1,27 @@
 package com.alextim.bank.exchange.service;
 
 
-import com.alextim.bank.common.dto.exchange.RateResponseDto;
 import com.alextim.bank.exchange.entity.Currency;
 import com.alextim.bank.exchange.exception.RateNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {ConvertServiceImpl.class})
+@ActiveProfiles("test")
 class ConvertServiceTest {
 
     @MockitoBean
@@ -45,6 +49,8 @@ class ConvertServiceTest {
         rates.put("RUB", 1.0);
         rates.put("CNY", 108.0);
         rates.put("JPY", 0.5358);
+
+        when(currencyService.getAllCurrencies()).thenReturn(currencies);
     }
 
 

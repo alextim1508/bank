@@ -1,17 +1,18 @@
 package com.alextim.bank.exchange.controller;
 
 import com.alextim.bank.common.client.AuthServiceClient;
-import com.alextim.bank.common.client.OAuth2TokenClient;
 import com.alextim.bank.exchange.entity.Currency;
 import com.alextim.bank.exchange.repository.CurrencyRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,12 +28,15 @@ public class CurrencyControllerTest extends AbstractControllerTestContainer {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-
     @MockitoBean
     private AuthServiceClient authServiceClient;
 
     @MockitoBean
-    private OAuth2TokenClient oauth2TokenClient;
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     @AfterEach
     public void tearDown() {

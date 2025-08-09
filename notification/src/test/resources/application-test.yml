@@ -4,7 +4,7 @@ spring:
       enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5438/exchange-db
+    url: jdbc:postgresql://localhost:5439/notification-db
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -12,9 +12,10 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/master.yml
-    url: jdbc:postgresql://localhost:5438/exchange-db
+    url: jdbc:postgresql://localhost:5439/notification-db
     user: postgres
     password: postgres
 
 sso:
   client-registration-id: bank
+

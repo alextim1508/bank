@@ -1,6 +1,5 @@
-jar {
-    archiveBaseName.set("common")
-    archiveVersion.set("")
+plugins {
+    id 'java-library'
 }
 
 dependencies {
@@ -20,4 +19,11 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:${jsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jsonWebTokenVersion}"
+}
+
+tasks.named('bootJar') {
+    enabled = false
+}
+tasks.named('jar') {
+    enabled = true
 }

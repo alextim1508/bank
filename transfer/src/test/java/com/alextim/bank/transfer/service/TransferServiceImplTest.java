@@ -21,7 +21,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,27 +35,28 @@ import static com.alextim.bank.transfer.constant.TransferOperationType.INTERNAL_
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {TransferServiceImpl.class})
+@ActiveProfiles("test")
 class TransferServiceImplTest {
 
-    @Mock
+    @Autowired
+    private TransferServiceImpl transferService;
+
+    @MockitoBean
     private AccountBalanceServiceClient accountBalanceServiceClient;
 
-
-    @Mock
+    @MockitoBean
     private ExchangeServiceClient exchangeServiceClient;
 
-    @Mock
+    @MockitoBean
     private BlockerServiceClient blockerServiceClient;
 
-    @Mock
+    @MockitoBean
     private NotificationServiceClient notificationServiceClient;
 
-    @Mock
+    @MockitoBean
     private TransferOperationRepository transferOperationRepository;
 
-    @InjectMocks
-    private TransferServiceImpl transferService;
 
     private InternalTransferRequest internalRequest;
     private ExternalTransferRequest externalRequest;

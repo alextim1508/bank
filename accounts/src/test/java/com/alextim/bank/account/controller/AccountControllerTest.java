@@ -7,7 +7,6 @@ import com.alextim.bank.account.service.AccountService;
 import com.alextim.bank.account.service.CurrencyService;
 import com.alextim.bank.common.client.AuthServiceClient;
 import com.alextim.bank.common.client.NotificationServiceClient;
-import com.alextim.bank.common.client.OAuth2TokenClient;
 import com.alextim.bank.common.dto.ApiResponse;
 import com.alextim.bank.common.dto.auth.TokenStatusResponse;
 import com.alextim.bank.common.dto.exchange.CurrencyResponse;
@@ -19,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,7 +28,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -59,7 +62,11 @@ class AccountControllerTest extends AbstractControllerTestContainer {
     private AuthServiceClient authServiceClient;
 
     @MockitoBean
-    private OAuth2TokenClient oauth2TokenClient;
+    private OAuth2AuthorizedClientManager authorizedClientManager;
+    @MockitoBean
+    private ClientRegistrationRepository clientRegistrationRepository;
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     @BeforeEach
     public void setUp() {
