@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.alextim.bank.cache.constant.CashOperationType.*;
@@ -46,6 +47,7 @@ public class CashServiceImpl implements CashService {
                 .login(request.getLogin())
                 .amount(request.getAmount())
                 .operationType(CASH_DEPOSIT)
+                .timestamp(LocalDateTime.now())
                 .build();
         log.info("Operation check request: {}", operationCheckRequest);
 
@@ -94,6 +96,7 @@ public class CashServiceImpl implements CashService {
                 .login(request.getLogin())
                 .amount(request.getAmount())
                 .operationType(CASH_WITHDRAW)
+                .timestamp(LocalDateTime.now())
                 .build();
         log.info("Operation check request: {}", operationCheckRequest);
 

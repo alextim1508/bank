@@ -50,13 +50,11 @@ public class JwtAuthenticationFilterImpl extends OncePerRequestFilter implements
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("doFilterInternal");
 
         String requestURI = request.getRequestURI();
-        log.info("JwtAuthenticationFilter for {} {}", requestURI, request.getMethod());
 
         if (publicEndpointChecker.isPublicRequest(requestURI)) {
-            log.info("is public");
+            log.debug("{} is public", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
@@ -97,7 +95,7 @@ public class JwtAuthenticationFilterImpl extends OncePerRequestFilter implements
         accessToken = refreshAccessTokenIfExpiring(response, accessToken, refreshToken);
 
         String extractedLogin = jwtService.extractUsername(accessToken);
-        log.info("Extracted login from accessToken cookie: {}", extractedLogin);
+        log.debug("Extracted login from accessToken cookie: {}", extractedLogin);
 
         HttpServletRequest wrappedRequest = wrapRequestWithUserLogin(request, extractedLogin);
 
@@ -129,7 +127,7 @@ public class JwtAuthenticationFilterImpl extends OncePerRequestFilter implements
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-        log.info("Access token refreshed and set in cookie");
+        log.debug("Access token refreshed and set in cookie");
 
         return newAccessToken;
 

@@ -18,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -43,12 +41,6 @@ public class AuthController {
         log.info("Incoming request for login");
 
         TokenPairResponse token = authService.generateToken(request);
-
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication = " + authentication);
-        String login = authentication.getName();
-        System.out.println("login = " + login);
 
         return ResponseEntity.ok(ApiResponse.success(token));
     }

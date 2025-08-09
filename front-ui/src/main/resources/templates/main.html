@@ -91,21 +91,21 @@
                 <td style="font-weight:bold;">Фамилия Имя</td>
                 <td th:text="${name}"/>
                 <td>
-                    <input name="name" type="text" style="width:100%"/>
+                    <input name="name" type="text" style="width:100%" required/>
                 </td>
             </tr>
             <tr>
                 <td style="font-weight:bold;">Дата рождения</td>
                 <td th:text="${birthdate}"/>
                 <td>
-                    <input name="birthdate" type="date" style="width:100%"/>
+                    <input name="birthdate" type="date" style="width:100%" required/>
                 </td>
             </tr>
             <tr th:each="balance : ${balances}">
-                <td style="font-weight:bold;" th:text="${balance.getCurrencyTitle()}"/>
-                <td th:text="${balance.isExists() ? (balance.getAmount()+' '+balance.getCurrencyCode()) : ''}"/>
+                <td style="font-weight:bold;" th:text="${balance.getTitle()}"/>
+                <td th:text="${balance.isOpened() ? (balance.getAmount()+' '+balance.getCode()) : ''}"/>
                 <td style="text-align:right">
-                    <input name="balance" type="checkbox" th:checked="${balance.isExists()}" th:value="${balance.getCurrencyCode()}"/>
+                    <input name="balance" type="checkbox" th:checked="${balance.isOpened()}" th:value="${balance.getCode()}"/>
                 </td>
             </tr>
             <tr>

@@ -11,6 +11,7 @@ import com.alextim.bank.common.dto.transfer.ExternalTransferRequest;
 import com.alextim.bank.common.dto.transfer.InternalTransferRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,8 +64,9 @@ public class AccountController {
     @PostMapping("/editUserAccounts")
     public String editAccount(@RequestHeader(value = "${jwt.login-header-name}") String login,
                               @RequestParam String name,
-                              @RequestParam LocalDate birthdate,
+                              @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate birthdate,
                               @RequestParam("balance") List<String> currencyCodes) {
+        log.info("Incoming request for editing account. Login: {}", login);
 
         AccountUpdateRequest accountUpdateRequest = AccountUpdateRequest.builder()
                 .login(login)

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.alextim.bank.common.client.util.BalanceClientUtils.*;
@@ -67,6 +68,7 @@ public class TransferServiceImpl implements TransferService {
                 .login(request.getLogin())
                 .amount(debitAmount)
                 .operationType(CREDIT)
+                .timestamp(LocalDateTime.now())
                 .build();
         log.info("Operation check request: {}", operationCheckRequest);
 
@@ -146,6 +148,7 @@ public class TransferServiceImpl implements TransferService {
                 .login(request.getFromLogin())
                 .amount(debitAmount)
                 .operationType(DEBIT)
+                .timestamp(LocalDateTime.now())
                 .build();
         log.info("Debit operation check request: {}", operationCheckRequest);
 
@@ -159,6 +162,7 @@ public class TransferServiceImpl implements TransferService {
                 .login(request.getToLogin())
                 .amount(request.getAmount())
                 .operationType(CREDIT)
+                .timestamp(LocalDateTime.now())
                 .build();
         log.info("Credit operation check request: {}", operationCheckRequest);
 
