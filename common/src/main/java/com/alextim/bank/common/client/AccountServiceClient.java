@@ -2,6 +2,8 @@ package com.alextim.bank.common.client;
 
 import com.alextim.bank.common.dto.ApiResponse;
 import com.alextim.bank.common.dto.account.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "account-service")
+@Retry(name = "accountService")
+@CircuitBreaker(name = "accountService")
 public interface AccountServiceClient {
 
     @PostMapping

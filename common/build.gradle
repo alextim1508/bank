@@ -19,6 +19,9 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:${jsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${jsonWebTokenVersion}"
     runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jsonWebTokenVersion}"
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+    implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
 }
 
 tasks.named('bootJar') {
