@@ -1,3 +1,17 @@
+server:
+  forward-headers-strategy: native
+
 spring:
+  application:
+    name: front-ui
   config:
-    import: configserver:http://config-server:8888
+    import: classpath:application-common.yml
+  security:
+    oauth2:
+      client:
+        registration:
+          bank:
+            client-id: front-client
+            client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_CLIENT_SECRET}
+
+

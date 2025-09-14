@@ -9,6 +9,4 @@ include 'exchange-generator'
 include 'exchange'
 include 'notification'
 include 'front-ui'
-include 'gateway'
-include 'config-server'
 

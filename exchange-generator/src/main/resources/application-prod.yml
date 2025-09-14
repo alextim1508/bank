@@ -1,3 +1,14 @@
 spring:
+  application:
+    name: exchange-generator
   config:
-    import: configserver:http://config-server:8888
+    import: classpath:application-common.yml
+
+  security:
+    oauth2:
+      client:
+        registration:
+          bank:
+            token-url: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_TOKEN_URL}
+            client-id: exchange-generator-client
+            client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_CLIENT_SECRET}

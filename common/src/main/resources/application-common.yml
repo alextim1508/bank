@@ -1,0 +1,151 @@
+spring:
+  cloud:
+    discovery:
+      health-check-path: /actuator/health
+      health-check-interval: 15s
+      prefer-ip-address: true
+      instance-id: ${spring.application.name}:${random.value}
+
+    openfeign:
+      client:
+        config:
+          account-service:
+            url: ${FEIGN_CLIENT_ACCOUNT_SERVICE}
+          account-balance-service:
+            url: ${FEIGN_CLIENT_ACCOUNT_BALANCE_SERVICE}
+          account-auth-service:
+            url: ${FEIGN_CLIENT_ACCOUNT_AUTH_SERVICE}
+          blocker-service:
+            url: ${FEIGN_CLIENT_BLOCKER_SERVICE}
+          transfer-service:
+            url: ${FEIGN_CLIENT_TRANSFER_SERVICE}
+          cash-service:
+            url: ${FEIGN_CLIENT_CASH_SERVICE}
+          exchange-service:
+            url: ${FEIGN_CLIENT_EXCHANGE_SERVICE}
+          notification-service:
+            url: ${FEIGN_CLIENT_NOTIFICATION_SERVICE}
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI}
+        registration:
+          bank:
+            provider: keycloak
+            authorization-grant-type: client_credentials
+            scope: profile
+            client-authentication-method: client_secret_post
+      resourceserver:
+        jwt:
+          issuer-uri: ${SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI}
+
+sso:
+  client-registration-id: bank
+
+jwt:
+  login-header-name: X-User-Login
+  access-token-name: accessToken
+  refresh-token-name: refreshToken
+  secret: ${JWT_SECRET}
+  access-expiration: 1200     # 10 минут
+  refresh-expiration: 86400  # 24 часа
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      accountService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      accountBalanceService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      accountAuthService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      blockerService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      cashService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      transferService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      exchangeService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+      notificationService:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+  retry:
+    instances:
+      accountService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      accountBalanceService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      accountAuthService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      blockerService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      cashService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      transferService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      exchangeService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+      notificationService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true                  
