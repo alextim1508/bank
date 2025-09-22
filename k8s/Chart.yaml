@@ -1,0 +1,94 @@
+apiVersion: v2
+name: k8s
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+dependencies:
+
+  - name: front-ui-service
+    version: "0.1.0"
+    repository: "file://./charts/front-ui-service"
+    
+  - name: account-service
+    version: "0.1.0"
+    repository: "file://./charts/account-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: account-db
+    condition: account-db.enabled
+
+  - name: redis
+    version: "17.11.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: block-token-list-db
+    condition: block-token-list-db.enabled
+
+  - name: blocker-service
+    version: "0.1.0"
+    repository: "file://./charts/blocker-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: suspicious-operation-db
+    condition: suspicious-operation-db.enabled
+
+  - name: redis
+    version: "17.11.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: operation-count-db
+    condition: operation-count-db.enabled    
+    
+  - name: cash-service
+    version: "0.1.0"
+    repository: "file://./charts/cash-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: cash-db
+    condition: cash-db.enabled    
+    
+  - name: transfer-service
+    version: "0.1.0"
+    repository: "file://./charts/transfer-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: transfer-db
+    condition: transfer-db.enabled        
+    
+  - name: exchange-service
+    version: "0.1.0"
+    repository: "file://./charts/exchange-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: exchange-db
+    condition: exchange-db.enabled   
+    
+  - name: exchange-generator-service
+    version: "0.1.0"
+    repository: "file://./charts/exchange-generator-service"   
+
+  - name: notification-service
+    version: "0.1.0"
+    repository: "file://./charts/notification-service"
+
+  - name: postgresql
+    version: "14.2.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: notification-db
+    condition: notification-db.enabled       
+    
+  - name: keycloak
+    version: "24.4.12"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: keycloak-service
+    condition: keycloak-service.enabled

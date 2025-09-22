@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "transfer-service.fullname" . }}
+  labels:
+    {{- include "transfer-service.labels" . | nindent 4 }}
+
+data:
+  SPRING_DATASOURCE_URL: {{ tpl .Values.database.url .  | required "database.url is required" }}

@@ -1,0 +1,45 @@
+image:
+  repository: account-service
+  pullPolicy: IfNotPresent
+  tag: 0.0.1-SNAPSHOT
+  
+replicaCount: 1
+
+server:
+  port: 8080
+
+oauth2:
+  clientSecret: sJqfAimSEzt5X1gSdnIEZX8IS5dlhMmF
+
+database:
+  url: "jdbc:postgresql://{{ .Release.Name }}-account-db:5432/account_db"
+  username: postgres
+  password: postgres
+
+redis:
+  host: "{{ .Release.Name }}-block-token-list-db-redis-service"
+  port: 6379
+
+service:
+  type: ClusterIP
+  port: 8080 
+  
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""  
+  
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi

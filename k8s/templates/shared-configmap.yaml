@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-app-config
+  labels:
+    app: shared-config
+    release: {{ .Release.Name }}
+data:
+  FEIGN_CLIENT_ACCOUNT_SERVICE: http://{{ .Release.Name }}-account-service:8080/account
+  FEIGN_CLIENT_ACCOUNT_BALANCE_SERVICE: http://{{ .Release.Name }}-account-service:8080/account/balance
+  FEIGN_CLIENT_ACCOUNT_AUTH_SERVICE: http://{{ .Release.Name }}-account-service:8080/account/auth
+  FEIGN_CLIENT_BLOCKER_SERVICE: http://{{ .Release.Name }}-blocker-service:8080/blocker
+  FEIGN_CLIENT_TRANSFER_SERVICE: http://{{ .Release.Name }}-transfer-service:8080/transfer
+  FEIGN_CLIENT_CASH_SERVICE: http://{{ .Release.Name }}-cash-service:8080/cash
+  FEIGN_CLIENT_EXCHANGE_SERVICE: http://{{ .Release.Name }}-exchange-service:8080/exchange
+  FEIGN_CLIENT_NOTIFICATION_SERVICE: http://{{ .Release.Name }}-notification-service:8080/notification
+
+  SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://{{ .Release.Name }}-keycloak-service/realms/bank
+  SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI: http://{{ .Release.Name }}-keycloak-service/realms/bank

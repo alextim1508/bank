@@ -1,0 +1,137 @@
+global:
+  sharedConfig:
+    enabled: true
+    labels:
+      config-type: shared
+      env: production
+
+  sharedSecrets:
+    enabled: true
+    labels:
+      secret-type: shared
+      env: production
+
+  jwt:
+    secret: "YmFzZTY0ZW5jb2RlZGtleWZvckhzNTExMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MA=="
+
+
+keycloak-service:
+  replicaCount: 1
+            
+account-db:
+  enabled: true
+  auth:
+    username: "postgres"
+    password: "postgres"
+    database: "account_db"
+    
+block-token-list-db:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
+  service:
+    port: 6379
+    
+suspicious-operation-db:
+  enabled: true
+  auth: 
+    database: suspicious_operation_db
+    username: postgres
+    password: "postgres"
+    
+operation-count-db:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: false
+  service:
+    port: 6379
+    
+cash-db:
+  enabled: true
+  auth: 
+    database: cash_db
+    username: postgres
+    password: "postgres"
+
+transfer-db:
+  enabled: true
+  auth: 
+    database: transfer_db
+    username: postgres
+    password: "postgres"
+   
+exchange-db:
+  enabled: true
+  auth: 
+    database: exchange_db
+    username: postgres
+    password: "postgres"
+
+notification-db:
+  enabled: true
+  auth: 
+    database: notification_db
+    username: postgres
+    password: "postgres"
+
+keycloak-service:
+  enabled: true
+  auth:
+    adminUser: admin
+    adminPassword: admin
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  postgresql:
+    enabled: false
+  production: false
+  persistence:
+    enabled: false
+  externalDatabase:
+    host: "localhost"
+    port: 5432
+    user: "keycloak"
+    password: "keycloak"
+    database: "keycloak"
+  extraEnvVars:
+    - name: KC_DB
+      value: "dev-file"
+    - name: DB_VENDOR
+      value: "h2"
+    - name: JAVA_OPTS_APPEND
+      value: "-Dkeycloak.profile=preview -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/opt/bitnami/keycloak/data/import -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+  extraVolumes:
+    - name: realm-config
+      configMap:
+        name: realm-config
+  extraVolumeMounts:
+    - name: realm-config
+      mountPath: /opt/bitnami/keycloak/data/import
+  command:
+    - "/opt/bitnami/keycloak/bin/kc.sh"
+    - "start-dev"
+    - "--http-enabled=true"
+    - "--hostname-strict=false"
+    - "--import-realm"
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+  startupProbe:
+    enabled: false
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: 500m
+    requests:
+      memory: 512Mi
+      cpu: 200m

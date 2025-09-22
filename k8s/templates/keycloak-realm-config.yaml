@@ -1,0 +1,12 @@
+# templates/keycloak-realm-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: realm-config # Имя должно совпадать с указанным в values.yaml
+  labels:
+    app: realm-config
+    release: {{ .Release.Name }}
+data:
+  # Используем tpl для обработки шаблонов внутри файла и название файла должно быть *-realm.json
+  bank-realm.json: |-
+{{ tpl (.Files.Get "files/realms/bank-realm.json") . | indent 4 }}
