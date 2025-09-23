@@ -6,9 +6,6 @@
 - **Spring Boot Framework**
 - **Spring Cloud**
 - **Spring MVC для обработки HTTP-запросов**
-- **Spring Cloud Gateway для маршрутизация запросов, балансировки нагрузки**
-- **Spring Cloud Config для хранения и управления настройками всех микросервисов**
-- **Consul (Service Discovery) для обнаружения микросервисов сервисов**
 - **Spring Security для ограничения доступа к функционалу приложения**
 - **Spring Cloud Openfeign для отправки HTTP-запросов, ограничения частоты запросов, реализации резервных ответов**
 - **OAuth2 Authorization Code Flow для взаимодействия между микросервисами**
@@ -23,7 +20,8 @@
 - **Thymeleaf для шаблонов html страниц**
 - **Spring validation для валидации пользовательских данных**
 - **Lombok для генерации шаблонного кода**
-- **Docker для развёртывания и запуска контейнеров postgres, redis, keycloak и разработанных веб-приложений**
+- **Jenkins для развёртывания приложения**
+- **Kubernetes для оркестрации контейнеризированных сервисов**
 
 ### [Сервис аккаунтов (Account)](account)
 Сервис аккаунтов хранит информацию о зарегистрированных аккаунтах и счетах в каждом из них (именно в нём хранятся 
@@ -51,7 +49,7 @@
 
 ### Схема взаимодействия сервисов:
 
-![](screenshots/4.png)
+![](screenshots/4.jpg)
 
 ## Запуск приложения
 
@@ -61,35 +59,44 @@
 git clone https://github.com/alextim1508/bank
 ```
 
-Собрать проект
+Для запуска приложения необходимо установить следующие компоненты:
+
+- Kubectl
+- Helm
+- Minikube
+- Jenkins
+
+После установки указанных компонентов необходимо запустить Minikube:
+- minikube start --vm-driver=docker --cpus=8 --memory=8192
+- minikube addons enable ingress
+- minikube addons enable storage-provisioner
+- minikube addons enable default-storageclass
+
+Далее заходим в Jenkins и добавляем в Blue Ocean Git проект из файла со ссылкой на текущий проект
+Jenkins подхватит Jenkinsfile и запустит пайплайн по сборке, установке и запуску необходимых компонентов приложения.
+
+После успешного выполнения пайплайна необходимо убедиться, что все поды успешно стартовали
 
 ```bash
-gradlew.bat clean bootJar
+kubectl get pods
 ```
 
-Запустить docker compose файл.
+![](screenshots/7.jpg)
+
+
+После успешного старта всех подов необходимо запустить команду от имени администратора:
 
 ```bash
-docker-compose -f docker-compose.yml up -d
+minikube tunnel
 ```
 
-![](screenshots/5.jpg)
-
-Открыть страницу в браузере
+В файле **C:\Windows\System32\drivers\etc\hosts** добавить строчку:
 
 ```bash
-http://localhost:8500/
+127.0.0.1 my-bank-app.local
 ```
 
-![](screenshots/6.jpg)
-
-Убедиться, что все микросервисы поднялись.
-
-Открыть страницу в браузере
-
-```bash
-http://localhost:8080/
-```
+После этого фронт приложения будет доступен по ссылке http://my-bank-app.local/login
 
 Откроется страница входа.
 
@@ -105,3 +112,10 @@ password: pass
 Откроется страница приложения 
 
 ![](screenshots/1.jpg)
+
+
+
+
+
+
+

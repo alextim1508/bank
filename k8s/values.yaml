@@ -25,13 +25,12 @@ front-ui-service:
     enabled: true
     className: "nginx"
     annotations:
-      # Эти аннотации применяются ко всем путям
       nginx.ingress.kubernetes.io/use-regex: "true"
       nginx.ingress.kubernetes.io/rewrite-target: /front/$1
     hosts:
       - host: my-bank-app.local
         paths:
-          # Правило 1: /user/любой_путь → /front/любой_путь 
+          # Правило 1: /user/любой_путь → /front/любой_путь
           - path: /user/(.*)
             pathType: ImplementationSpecific
      
@@ -39,9 +38,6 @@ front-ui-service:
           - path: /(.*)
             pathType: ImplementationSpecific
 
-keycloak-service:
-  replicaCount: 1
-            
 account-db:
   enabled: true
   auth:
