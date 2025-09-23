@@ -13,5 +13,11 @@ spring:
           bank:
             client-id: front-client
             client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_CLIENT_SECRET}
+  mvc:
+    log-request-details: true
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 

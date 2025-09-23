@@ -15,6 +15,30 @@ global:
     secret: "YmFzZTY0ZW5jb2RlZGtleWZvckhzNTExMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MA=="
 
 
+front-ui-service:
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      # Эти аннотации применяются ко всем путям
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /front/$1
+    hosts:
+      - host: my-bank-app.local
+        paths:
+          # Правило 1: /user/любой_путь → /front/любой_путь 
+          - path: /user/(.*)
+            pathType: ImplementationSpecific
+     
+          # Правило 2: любой другой путь /* → /front/тот_же_путь
+          - path: /(.*)
+            pathType: ImplementationSpecific
+
 keycloak-service:
   replicaCount: 1
             
