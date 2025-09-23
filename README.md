@@ -61,35 +61,41 @@
 git clone https://github.com/alextim1508/bank
 ```
 
-Собрать проект
+Для запуска приложения необходимо установить следующие компоненты:
+
+- Kubectl
+- Helm
+- Minikube
+- Jenkins
+
+После установки указанных компонентов необходимо запустить Minikube:
+- minikube start --vm-driver=docker --cpus=8 --memory=8192
+- minikube addons enable ingress
+- minikube addons enable storage-provisioner
+- minikube addons enable default-storageclass
+
+Далее заходим в Jenkins и добавляем в Blue Ocean Git проект из файла со ссылкой на текущий проект
+Jenkins подхватит Jenkinsfile и запустит пайплайн по сборке, установке и запуску необходимых компонентов приложения.
+
+После успешного выполнения пайплайна необходимо убедиться, что все поды успешно стартовали
 
 ```bash
-gradlew.bat clean bootJar
+kubectl get pods
 ```
 
-Запустить docker compose файл.
+![](screenshots/7.jpg)
+
+
+После успешного старта всех подов необходимо запустить команду от имени администратора:
+- minikube tunnel
+
+В файле **C:\Windows\System32\drivers\etc\hosts** добавить строчку:
 
 ```bash
-docker-compose -f docker-compose.yml up -d
+127.0.0.1 my-bank-app.local
 ```
 
-![](screenshots/5.jpg)
-
-Открыть страницу в браузере
-
-```bash
-http://localhost:8500/
-```
-
-![](screenshots/6.jpg)
-
-Убедиться, что все микросервисы поднялись.
-
-Открыть страницу в браузере
-
-```bash
-http://localhost:8080/
-```
+После этого фронт приложения будет доступен по ссылке http://my-bank-app.local/login
 
 Откроется страница входа.
 
@@ -105,3 +111,10 @@ password: pass
 Откроется страница приложения 
 
 ![](screenshots/1.jpg)
+
+
+
+
+
+
+
