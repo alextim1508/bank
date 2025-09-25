@@ -17,7 +17,7 @@ database:
   password: postgres
 
 redis:
-  host: "{{ .Release.Name }}-block-token-list-db-redis-service"
+  host: "{{ .Release.Name }}-block-token-list-db-master"
   port: 6379
 
 service:

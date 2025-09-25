@@ -90,5 +90,6 @@ dependencies:
   - name: keycloak
     version: "24.4.12"
     repository: "https://charts.bitnami.com/bitnami"
-    alias: keycloak-service
-    condition: keycloak-service.enabled
+    alias: keycloak
+    condition: keycloak.enabled
+

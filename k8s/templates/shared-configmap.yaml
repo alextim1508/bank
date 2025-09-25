@@ -15,5 +15,5 @@ data:
   FEIGN_CLIENT_EXCHANGE_SERVICE: http://{{ .Release.Name }}-exchange-service:8080/exchange
   FEIGN_CLIENT_NOTIFICATION_SERVICE: http://{{ .Release.Name }}-notification-service:8080/notification
 
-  SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://{{ .Release.Name }}-keycloak-service/realms/bank
-  SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI: http://{{ .Release.Name }}-keycloak-service/realms/bank
+  SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://{{ .Release.Name }}-keycloak/realms/bank
+  SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI: http://{{ .Release.Name }}-keycloak/realms/bank

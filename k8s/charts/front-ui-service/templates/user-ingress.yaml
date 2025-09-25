@@ -1,23 +1,22 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.userIngress.enabled -}}
 {{- $fullName := include "front-ui-service.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-user
   labels:
     {{- include "front-ui-service.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.userIngress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.ingress.className }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.userIngress.className }}
+  ingressClassName: {{ .Values.userIngress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.userIngress.tls }}
   tls:
-    {{- range .Values.ingress.tls }}
+    {{- range .Values.userIngress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -26,7 +25,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
+    {{- range .Values.userIngress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -37,8 +36,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  # Use the *name* of the service port (defined as 'http' in service.yaml)
                   name: http
           {{- end }}
     {{- end }}
-{{- end }} 
+{{- end }}

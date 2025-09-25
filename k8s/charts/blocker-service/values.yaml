@@ -17,7 +17,7 @@ database:
   password: postgres
   
 redis:
-  host: "{{ .Release.Name }}-operation-count-db-redis-service"
+  host: "{{ .Release.Name }}-operation-count-db-master"
   port: 6379
 
 service:

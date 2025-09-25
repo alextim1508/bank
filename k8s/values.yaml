@@ -14,8 +14,44 @@ global:
   jwt:
     secret: "YmFzZTY0ZW5jb2RlZGtleWZvckhzNTExMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNDU2Nzg5MA=="
 
+ingress-nginx:
+  controller:
+    config:
+      allow-snippet-annotations: "true"
 
 front-ui-service:
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+
+  userIngress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /front/account/$1
+    hosts:
+      - host: my-bank-app.local
+        paths:
+          # Правило: /user/любой_путь → /front/account/любой_путь
+          - path: /user/(.*)
+            pathType: ImplementationSpecific
+
+  rootIngress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /front/$1
+    hosts:
+      - host: my-bank-app.local
+        paths:
+          # Правило: любой другой путь /* → /front/тот_же_путь
+          - path: /(.*)
+            pathType: ImplementationSpecific
+
+account-service:
   service:
     type: ClusterIP
     port: 8080
@@ -26,17 +62,30 @@ front-ui-service:
     className: "nginx"
     annotations:
       nginx.ingress.kubernetes.io/use-regex: "true"
-      nginx.ingress.kubernetes.io/rewrite-target: /front/$1
     hosts:
       - host: my-bank-app.local
         paths:
-          # Правило 1: /user/любой_путь → /front/любой_путь
-          - path: /user/(.*)
-            pathType: ImplementationSpecific
-     
-          # Правило 2: любой другой путь /* → /front/тот_же_путь
-          - path: /(.*)
-            pathType: ImplementationSpecific
+          # Правило: /account/любой_путь → /front/account/любой_путь
+          - path: /account
+            pathType: Prefix
+
+exchange-service:
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    hosts:
+      - host: my-bank-app.local
+        paths:
+          # Правило: /exchange/любой_путь → /exchange/любой_путь
+          - path: /exchange
+            pathType: Prefix
 
 account-db:
   enabled: true
@@ -102,7 +151,7 @@ notification-db:
     username: postgres
     password: "postgres"
 
-keycloak-service:
+keycloak:
   enabled: true
   auth:
     adminUser: admin
