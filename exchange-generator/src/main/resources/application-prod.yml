@@ -12,3 +12,10 @@ spring:
             token-url: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_TOKEN_URL}
             client-id: exchange-generator-client
             client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_CLIENT_SECRET}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+

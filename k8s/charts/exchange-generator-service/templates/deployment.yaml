@@ -42,7 +42,14 @@ spec:
                 echo "Waiting for Keycloak to be ready..."
                 sleep 5
               done
-              echo "Keycloak is ready!"     
+              echo "Keycloak is ready!"
+
+              echo "Waiting for kafka to be ready..."
+              while ! nc -z {{ .Release.Name }}-kafka 9092; do
+                echo "Waiting for kafka to be ready..."
+                sleep 5
+              done
+              echo "Kafka is ready!"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

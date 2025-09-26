@@ -41,4 +41,14 @@ spring:
             client-id: exchange-client
             client-secret: ${SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_CLIENT_SECRET}
 
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: exchange-generator-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: latest
+      enable-auto-commit: true
+      properties:
+        spring.json.trusted.packages: "com.alextim.bank.common.dto.exchange"
 

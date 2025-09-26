@@ -93,3 +93,8 @@ dependencies:
     alias: keycloak
     condition: keycloak.enabled
 
+  - name: kafka
+    version: "32.4.3"
+    repository: "https://charts.bitnami.com/bitnami"
+    alias: kafka
+    condition: kafka.enabled

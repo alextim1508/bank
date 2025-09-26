@@ -1,37 +1,28 @@
 package com.alextim.bank.exchangegenerator.service;
 
-import com.alextim.bank.common.dto.ApiResponse;
 import com.alextim.bank.common.dto.exchange.UpdateRatesRequest;
-import com.alextim.bank.common.dto.exchange.UpdateRatesResponse;
-import com.alextim.bank.exchangegenerator.dto.OAuthTokenResponse;
-import com.alextim.bank.exchangegenerator.property.OAuth2ClientProperties;
+import com.alextim.bank.common.property.RatesKafkaTopicProperty;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-
-@Component
+@Setter
 @RequiredArgsConstructor
 @Slf4j
 public class ExchangeGenerator {
 
-    private final RestTemplate restTemplate;
-    private final OAuth2ClientProperties clientProperties;
     private final Random random = new Random();
 
-    @Value("${spring.cloud.openfeign.client.config.exchange-service.url}")
-    private String exchangeServiceUrl;
+    private final KafkaTemplate<String, UpdateRatesRequest> kafkaTemplate;
+    private final RatesKafkaTopicProperty topicProperty;
 
     public Map<String, Double> generateRates() {
         Map<String, Double> rates = new HashMap<>();
@@ -53,50 +44,30 @@ public class ExchangeGenerator {
         return rates;
     }
 
-    @Scheduled(fixedRate = 5_000)
+    @Scheduled(fixedRate = 2_000)
     public void updateRates() {
         try {
             Map<String, Double> rates = generateRates();
+            log.info("Generated rates: {}", rates);
 
-            UpdateRatesRequest request = new UpdateRatesRequest(rates);
+            kafkaTemplate.send(
+                    topicProperty.getName(),
+                    topicProperty.getPartition(),
+                    Instant.now().getEpochSecond(),
+                    topicProperty.getKey(),
+                    new UpdateRatesRequest(rates))
+                        .whenComplete((result, e) -> {
+                            if (e != null) {
+                                log.error("Error sending message: {}", e.getMessage(), e);
+                                return;
+                            }
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-             headers.setBearerAuth(getAccessToken());
-
-            HttpEntity<UpdateRatesRequest> entity = new HttpEntity<>(request, headers);
-
-            ResponseEntity<ApiResponse<UpdateRatesResponse>> response = restTemplate.exchange(
-                    exchangeServiceUrl + "/rates",
-                    HttpMethod.PUT,
-                    entity,
-                    new ParameterizedTypeReference<ApiResponse<UpdateRatesResponse>>() {}
-            );
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                log.info("Exchange rates have been successfully updated");
-            } else {
-                log.warn("Failed to update courses: {}", response.getStatusCode());
-            }
+                            RecordMetadata metadata = result.getRecordMetadata();
+                            log.info("Message sent. Topic = {}, partition = {}, offset = {}",
+                                    metadata.topic(), metadata.partition(), metadata.offset());
+                        });
         } catch (Exception e) {
             log.error("Error updating exchange rates", e);
         }
-    }
-
-    private String getAccessToken() {
-        String tokenUrl = clientProperties.getTokenUrl();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth(clientProperties.getClientId(), clientProperties.getClientSecret());
-
-        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "client_credentials");
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
-
-        return restTemplate.postForObject(tokenUrl, request, OAuthTokenResponse.class)
-                .getAccessToken();
     }
 }

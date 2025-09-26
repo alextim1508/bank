@@ -7,3 +7,4 @@ metadata:
 
 data:
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url  . | required "database.url is required" }}
+  KAFKA_BOOTSTRAP_SERVERS: {{ tpl .Values.kafka.bootstarServers  .  | required "kafka.bootstarServers is required" }}
