@@ -53,6 +53,12 @@ jwt:
   access-expiration: 1200     # 10 минут
   refresh-expiration: 86400  # 24 часа
 
+kafka:
+  rates-topic:
+    name: exchange-rates-topic
+    key: exchange-rate-update
+    partition: 0
+
 management:
   endpoints:
     web:
