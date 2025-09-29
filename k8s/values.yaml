@@ -212,9 +212,6 @@ kafka:
     - name: rates-topic
       partitions: 1
       replicas: 2
-    - name: rates-error-topic
-      partitions: 1
-      replicas: 2
   listeners:
     client:
       port: 9092

@@ -1,7 +1,6 @@
 package com.alextim.bank.exchange.config;
 
 
-import com.alextim.bank.common.property.ErrorKafkaTopicProperty;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.context.annotation.Bean;
@@ -19,16 +18,16 @@ import org.springframework.util.backoff.FixedBackOff;
 public class KafkaConfiguration {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final ErrorKafkaTopicProperty topicProperty;
 
     @Bean
     CommonErrorHandler commonErrorHandler() {
         ConsumerRecordRecoverer recordRecoverer = new DeadLetterPublishingRecoverer(
                 kafkaTemplate,
-                (record, e) -> new TopicPartition(topicProperty.getName(), topicProperty.getPartition())
+                (record, e) -> new TopicPartition(record.topic() + ".errors", record.partition())
         );
 
-        BackOff backOff = new FixedBackOff(0, 0);
+        BackOff backOff = new FixedBackOff(0, 1);
+
         return new DefaultErrorHandler(recordRecoverer, backOff);
     }
 }

@@ -12,5 +12,4 @@ import org.springframework.stereotype.Component;
 public class RatesKafkaTopicProperty {
     private String name;
     private String key;
-    private int partition;
 }

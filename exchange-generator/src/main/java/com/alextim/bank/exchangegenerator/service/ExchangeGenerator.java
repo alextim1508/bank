@@ -52,8 +52,6 @@ public class ExchangeGenerator {
 
             kafkaTemplate.send(
                     topicProperty.getName(),
-                    topicProperty.getPartition(),
-                    Instant.now().getEpochSecond(),
                     topicProperty.getKey(),
                     new UpdateRatesRequest(rates))
                         .whenComplete((result, e) -> {

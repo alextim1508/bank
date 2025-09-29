@@ -57,10 +57,6 @@ kafka:
   rate-topic:
     name: rates-topic
     key: rate-update-key
-    partition: 0
-  error-topic:
-    name: rates-error-topic
-    partition: 0
 
 management:
   endpoints:
