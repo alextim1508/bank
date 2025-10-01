@@ -89,6 +89,10 @@ exchange-service:
 
 account-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth:
     username: "postgres"
     password: "postgres"
@@ -96,6 +100,10 @@ account-db:
     
 block-token-list-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: "8.2.1-debian-12-r0"
   architecture: standalone
   auth:
     enabled: false
@@ -107,6 +115,10 @@ block-token-list-db:
     
 suspicious-operation-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth: 
     database: suspicious_operation_db
     username: postgres
@@ -114,6 +126,10 @@ suspicious-operation-db:
     
 operation-count-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: "8.2.1-debian-12-r0"
   architecture: standalone
   auth:
     enabled: false
@@ -125,6 +141,10 @@ operation-count-db:
     
 cash-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth: 
     database: cash_db
     username: postgres
@@ -132,6 +152,10 @@ cash-db:
 
 transfer-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth: 
     database: transfer_db
     username: postgres
@@ -139,6 +163,10 @@ transfer-db:
    
 exchange-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth: 
     database: exchange_db
     username: postgres
@@ -146,6 +174,10 @@ exchange-db:
 
 notification-db:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: "16.6.0-debian-12-r2"
   auth: 
     database: notification_db
     username: postgres
@@ -153,6 +185,10 @@ notification-db:
 
 keycloak:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/keycloak
+    tag: "26.3.3-debian-12-r0"
   auth:
     adminUser: admin
     adminPassword: admin
@@ -207,6 +243,10 @@ keycloak:
 
 kafka:
   enabled: true
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/kafka
+    tag: "4.0.0-debian-12-r10"
   replicaCount: 2
   topics:
     - name: rates-topic
