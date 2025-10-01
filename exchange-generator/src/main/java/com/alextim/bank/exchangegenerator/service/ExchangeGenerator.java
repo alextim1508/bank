@@ -3,18 +3,17 @@ package com.alextim.bank.exchangegenerator.service;
 import com.alextim.bank.common.dto.exchange.UpdateRatesRequest;
 import com.alextim.bank.common.property.RatesKafkaTopicProperty;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-@Setter
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class ExchangeGenerator {
