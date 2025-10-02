@@ -17,3 +17,5 @@ data:
 
   SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: http://{{ .Release.Name }}-keycloak/realms/bank
   SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI: http://{{ .Release.Name }}-keycloak/realms/bank
+
+  ZIPKIN_ENDPOINT: http://{{ .Release.Name }}-zipkin:9411/api/v2/spans

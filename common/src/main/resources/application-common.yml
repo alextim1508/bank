@@ -7,6 +7,9 @@ spring:
       instance-id: ${spring.application.name}:${random.value}
 
     openfeign:
+      trace:
+        feign:
+          enabled: true
       client:
         config:
           account-service:
@@ -25,6 +28,7 @@ spring:
             url: ${FEIGN_CLIENT_EXCHANGE_SERVICE}
           notification-service:
             url: ${FEIGN_CLIENT_NOTIFICATION_SERVICE}
+
 
   security:
     oauth2:
@@ -59,6 +63,12 @@ kafka:
     key: rate-update-key
 
 management:
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_ENDPOINT}
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:

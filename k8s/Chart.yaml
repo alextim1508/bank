@@ -98,3 +98,9 @@ dependencies:
     repository: "https://charts.bitnami.com/bitnami"
     alias: kafka
     condition: kafka.enabled
+
+  - name: zipkin
+    version: 0.3.6
+    repository: "https://openzipkin.github.io/zipkin-helm"
+    alias: zipkin
+    condition: zipkin.enabled

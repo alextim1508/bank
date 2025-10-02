@@ -115,6 +115,18 @@ password: pass
 ![](screenshots/1.jpg)
 
 
+##### Zipkin
+Для отслеживания запросов, проходящих через цепочку микросервисов, можно использовать анализатор трейсов Zipkin
+
+```bash
+kubectl port-forward svc/mybank-zipkin 9411:9411
+```
+
+```bash
+http://localhost:9411
+```
+
+![](screenshots/8.jpg)
 
 
 
