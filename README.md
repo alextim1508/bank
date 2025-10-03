@@ -128,7 +128,15 @@ http://localhost:9411
 
 ![](screenshots/8.jpg)
 
+##### Prometheus/Grafana
+Для мониторинга системы можно использовать Grafana
 
+```bash
+kubectl port-forward svc/mybank-grafana 3000:3000
+```
 
+```bash
+http://localhost:3000
+```
 
-
+![](screenshots/9.jpg)

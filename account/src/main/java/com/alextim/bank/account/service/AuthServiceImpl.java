@@ -34,6 +34,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtService jwtService;
 
+    private final AuthMetricsService authMetricsService;
+
     @Override
     public TokenPairResponse generateToken(LoginRequest request) {
         log.info("Generate token for {}", request.getLogin());
@@ -52,8 +54,12 @@ public class AuthServiceImpl implements AuthService {
                     new NotificationRequest(ACCOUNT, ACCOUNT_LOGIN, request.getLogin(),
                             "successful login"));
 
+            authMetricsService.incrementLoginSuccess(request.getLogin());
+
             return new TokenPairResponse(accessToken, refreshToken);
         }
+
+        authMetricsService.incrementLoginFailure(request.getLogin());
 
         sendNotification(notificationServiceClient,
                 new NotificationRequest(ACCOUNT, ACCOUNT_LOGIN_FAILED, request.getLogin(),

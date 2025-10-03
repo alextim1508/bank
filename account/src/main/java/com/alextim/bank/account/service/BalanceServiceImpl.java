@@ -35,6 +35,8 @@ public class BalanceServiceImpl implements BalanceService {
 
     private final NotificationServiceClient notificationServiceClient;
 
+    private final BalanceMetricsService balanceMetricsService;
+
     @Value("${account.balance.lock-timeout-seconds}")
     private int lockTimeoutSeconds;
 
@@ -52,8 +54,9 @@ public class BalanceServiceImpl implements BalanceService {
 
         balanceRepository.save(balance);
 
-        log.info("Successfully credited and frozen amount for login={}, currency={}", request.getLogin(), request.getCurrency());
+        balanceMetricsService.incrementBalanceOperation("credit", "success");
 
+        log.info("Successfully credited and frozen amount for login={}, currency={}", request.getLogin(), request.getCurrency());
     }
 
     @Override
@@ -64,6 +67,8 @@ public class BalanceServiceImpl implements BalanceService {
         log.info("Found balance: {}", balance);
 
         if (balance.getAmount().compareTo(request.getAmount()) < 0) {
+            balanceMetricsService.incrementBalanceOperation("debit", "failure", "insufficient_funds");
+
             throw new InsufficientFundsException(
                     request.getLogin(), request.getCurrency(),
                     balance.getAmount(), request.getAmount());
@@ -75,6 +80,8 @@ public class BalanceServiceImpl implements BalanceService {
         frozenAmount(balance, newFrozenAmount);
 
         balanceRepository.save(balance);
+
+        balanceMetricsService.incrementBalanceOperation("debit", "success");
 
         log.info("Successfully debited and updated frozen amount for login={}, currency={}", request.getLogin(), request.getCurrency());
     }
@@ -112,6 +119,8 @@ public class BalanceServiceImpl implements BalanceService {
     public void approve(ApproveOperationRequest request) {
         log.info("Approve. Request: {}", request);
         request.getLogins().forEach(this::unfreezeAccountBalance);
+
+        balanceMetricsService.incrementBalanceOperation("approve", "success");
     }
 
     public void unfreezeAccountBalance(String login) {

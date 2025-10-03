@@ -42,6 +42,8 @@ public class TransferServiceImpl implements TransferService {
 
     private final TransferOperationRepository transferOperationRepository;
 
+    private final TransferMetricsService transferMetricsService;
+
     @Override
     public void internalTransfer(InternalTransferRequest request) {
         log.info("Internal transfer request: {}", request);
@@ -75,6 +77,7 @@ public class TransferServiceImpl implements TransferService {
         var operationCheckResponse = checkOperation(blockerServiceClient, operationCheckRequest);
         log.info("Operation check response: {}", operationCheckResponse);
         if (!operationCheckResponse.isApproved()) {
+            transferMetricsService.incrementTransferOperation("internal", "failure");
             throw new SuspiciousOperationException();
         }
 
@@ -114,6 +117,8 @@ public class TransferServiceImpl implements TransferService {
                 .operationType(INTERNAL_TRANSFER)
                 .build());
         log.info("Saved transfer operation: {}", savedTransferOperation);
+
+        transferMetricsService.incrementTransferOperation("internal", "success");
 
         sendNotification(notificationServiceClient,
                 new NotificationRequest(TRANSFER, BALANCE_TRANSFERRED_INTERNAL, request.getLogin(),
@@ -155,6 +160,7 @@ public class TransferServiceImpl implements TransferService {
         var operationCheckResponse = checkOperation(blockerServiceClient, operationCheckRequest);
         log.info("Debit operation check response: {}", operationCheckResponse);
         if (!operationCheckResponse.isApproved()) {
+            transferMetricsService.incrementTransferOperation("external", "failure", "from");
             throw new SuspiciousOperationException();
         }
 
@@ -169,6 +175,7 @@ public class TransferServiceImpl implements TransferService {
         operationCheckResponse = checkOperation(blockerServiceClient, operationCheckRequest);
         log.info("Credit operation check response: {}", operationCheckResponse);
         if (!operationCheckResponse.isApproved()) {
+            transferMetricsService.incrementTransferOperation("external", "failure", "to");
             throw new SuspiciousOperationException();
         }
 
@@ -208,6 +215,8 @@ public class TransferServiceImpl implements TransferService {
                 .build());
 
         log.info("Saved transfer operation: {}", savedTransferOperation);
+
+        transferMetricsService.incrementTransferOperation("internal", "success");
 
         sendNotification(notificationServiceClient,
                 new NotificationRequest(TRANSFER, BALANCE_TRANSFERRED_EXTERNAL, request.getFromLogin(), "Межсчетный перевод выполнен"));

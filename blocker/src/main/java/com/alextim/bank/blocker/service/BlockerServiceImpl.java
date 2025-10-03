@@ -36,6 +36,8 @@ public class BlockerServiceImpl implements BlockerService{
 
     private final BlockerProperties blockerProperties;
 
+    private final BlockerMetricsService blockerMetricsService;
+
     @Override
     public boolean isSuspicious(OperationCheckRequest request) {
         log.info("Checking if operation is suspicious: {}", request);
@@ -71,6 +73,7 @@ public class BlockerServiceImpl implements BlockerService{
 
         if (isSuspicious) {
             saveSuspiciousOperation(request, reasons);
+            blockerMetricsService.incrementTransferBlocked(request.getLogin(), reasons.get(0).name());
         }
 
         log.info("Suspicious operation check result: login={}, isSuspicious={}, reasons={}",

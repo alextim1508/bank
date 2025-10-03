@@ -271,3 +271,194 @@ zipkin:
   service:
     type: ClusterIP
     port: 9411
+
+prometheus:
+  server:
+    service:
+      type: ClusterIP
+      servicePort: 9090
+
+  extraScrapeConfigs: |
+    - job_name: 'account-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-account-service:8080']
+          labels:
+            application: 'account-service'
+    - job_name: 'blocker-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-blocker-service:8080']
+          labels:
+            application: 'blocker-service'
+    - job_name: 'cash-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-cash-service:8080']
+          labels:
+            application: 'cash-service'
+    - job_name: 'transfer-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-transfer-service:8080']
+          labels:
+            application: 'transfer-service'    
+    - job_name: 'front-ui-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-front-ui-service:8080']
+          labels:
+            application: 'front-ui-service'
+    - job_name: 'exchange-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-exchange-service:8080']
+          labels:
+            application: 'exchange-service'
+    - job_name: 'exchange-generator-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-exchange-generator-service:8080']
+          labels:
+            application: 'exchange-generator-service'
+    - job_name: 'notification-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['{{ .Release.Name }}-notification-service:8080']
+          labels:
+            application: 'notification-service'
+
+  serverFiles:
+    alerting_rules.yml:
+      groups:
+        - name: http_errors
+          rules:
+            - alert: HighHttp5xxErrorRate
+              expr: >
+                sum(rate(http_server_requests_seconds_count{status=~"5.."}[1m])) 
+                / 
+                sum(rate(http_server_requests_seconds_count[1m])) 
+                > 0.1
+              for: 2m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Высокий процент 5xx ошибок"
+
+        - name: login_failures
+          rules:
+            - alert: HighLoginFailureRate
+              expr: |
+                sum by (login) (increase(custom_login_failure_total[5m])) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Слишком много неудачных логинов"
+                description: "Пользователь {{ $labels.login }} совершил более 5 неудачных логинов за 5 минут"
+
+        - name: fraud_detection
+          rules:
+            - alert: SuspiciousTransferBlocked
+              expr: |
+                increase(custom_transfer_blocked_total[1m]) > 0
+              for: 0m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Заблокирован подозрительный перевод"
+                description: "Обнаружена подозрительная операция. Пользователь: {{ $labels.login }}"
+
+        - name: currency_rates
+          rules:
+            - alert: CurrencyRateNotUpdated
+              expr: |
+                increase(currency_rates_updated_total[10m]) == 0
+              for: 2m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Не обновлялся курс валют"
+                description: "Курс валют не обновлялся последние 10 минут"
+
+grafana:
+  enabled: true
+
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  adminUser: admin
+  adminPassword: admin
+
+  ingress:
+    enabled: false
+
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: 'http://{{ .Release.Name }}-prometheus-server:9090'
+          isDefault: true
+
+  extraVolumeMounts:
+    - name: custom-dashboards
+      mountPath: /var/lib/grafana/dashboards/custom
+      readOnly: false
+
+  extraVolumes:
+    - name: custom-dashboards
+      configMap:
+        name: grafana-dashboards
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        # Провайдер для dashboards из gnetId
+        - name: default
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+        # Провайдер для собственных dashboards
+        - name: custom
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/custom
+
+  # Dashboards из Grafana.com
+  dashboards:
+    default:
+      spring-boot:
+        gnetId: 10280
+        revision: 1
+        datasource: Prometheus
+      jvm-overview:
+        gnetId: 4701
+        revision: 2
+        datasource: Prometheus
+
+  persistence:
+    enabled: true
+    size: 1Gi

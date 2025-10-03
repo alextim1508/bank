@@ -11,6 +11,7 @@ import com.alextim.bank.common.dto.blocker.OperationCheckRequest;
 import com.alextim.bank.common.dto.cash.DepositRequest;
 import com.alextim.bank.common.dto.cash.WithdrawRequest;
 import com.alextim.bank.common.dto.notification.NotificationRequest;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class CashServiceImpl implements CashService {
 
     private final ATMService atmService;
 
+    private final CashMetricsService cashMetricsService;
+
     @Override
     public void deposit(DepositRequest request) {
         log.info("Deposit request: {}", request);
@@ -54,6 +57,7 @@ public class CashServiceImpl implements CashService {
         var operationCheckResponse = checkOperation(blockerServiceClient, operationCheckRequest);
         log.info("Operation check response: {}", operationCheckResponse);
         if (!operationCheckResponse.isApproved()) {
+            cashMetricsService.incrementCashOperation("deposit", "failure");
             throw new SuspiciousOperationException();
         }
 
@@ -82,13 +86,16 @@ public class CashServiceImpl implements CashService {
                 .build());
         log.info("Saved cash operation: {}", savedCashOperation);
 
+        cashMetricsService.incrementCashOperation("deposit", "success");
+
         sendNotification(notificationServiceClient,
                 new NotificationRequest(CASH_OPERATION, BALANCE_CREDITED, request.getLogin(),
                         "Счёт пополнен"));
     }
 
-
     @Override
+    @Counted(value = "cash_operations_total", description = "Total number of cash operations",
+            extraTags = {"operation", "withdraw", "result", "success"})
     public void withdraw(WithdrawRequest request) {
         log.info("Deposit request: {}", request);
 
@@ -103,6 +110,7 @@ public class CashServiceImpl implements CashService {
         var operationCheckResponse = checkOperation(blockerServiceClient, operationCheckRequest);
         log.info("Operation check response: {}", operationCheckResponse);
         if (!operationCheckResponse.isApproved()) {
+            cashMetricsService.incrementCashOperation("withdraw", "failure");
             throw new SuspiciousOperationException();
         }
 
@@ -128,6 +136,8 @@ public class CashServiceImpl implements CashService {
                 .operationType(WITHDRAW)
                 .build());
         log.info("Saved cash operation: {}", savedCashOperation);
+
+        cashMetricsService.incrementCashOperation("withdraw", "success");
 
         sendNotification(notificationServiceClient, new NotificationRequest(CASH_OPERATION, BALANCE_DEBITED,
                 request.getLogin(), "Средства сняты"));

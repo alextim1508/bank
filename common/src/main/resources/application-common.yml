@@ -72,12 +72,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
-  endpoint:
-    health:
-      show-details: always
-    shutdown:
-      enabled: true
+        include: health,info,metrics,prometheus,loggers,features
 
 resilience4j:
   circuitbreaker:

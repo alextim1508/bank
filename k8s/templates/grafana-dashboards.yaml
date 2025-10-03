@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  labels:
+    app: grafana-dashboards
+    release: {{ .Release.Name }}
+data:
+  4701_rev10.json: |-
+{{ .Files.Get "files/dashboards/grafana-dashboard.json" | fromJson | toJson | indent 4 }}

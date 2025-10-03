@@ -56,5 +56,11 @@ dependencies:
 - name: zipkin
   repository: https://openzipkin.github.io/zipkin-helm
   version: 0.3.6
-digest: sha256:86c76816db3e5d186906dc70930b17f2eab550d4fce170eaecda43e6f6a34f22
-generated: "2025-10-01T19:15:54.1142514+03:00"
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 27.28.0
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 7.0.0
+digest: sha256:91912ee91c997ddccbe407e885e43d947a89bbc792728bca3716512fa5d1635f
+generated: "2025-10-02T12:38:42.0751705+03:00"

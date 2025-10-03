@@ -13,6 +13,7 @@ import com.alextim.bank.common.client.NotificationServiceClient;
 import com.alextim.bank.common.dto.account.*;
 import com.alextim.bank.common.dto.exchange.CurrencyResponse;
 import com.alextim.bank.common.dto.notification.NotificationRequest;
+import io.micrometer.core.annotation.Counted;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,6 +47,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final NotificationServiceClient notificationServiceClient;
 
+    @Counted(value = "custom_account_creation_total", description = "Total number of accounts created")
     @Override
     public AccountFullResponse createAccount(AccountRequest request) {
         log.info("Creating new account with login: {}", request.getLogin());
