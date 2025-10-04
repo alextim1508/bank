@@ -58,6 +58,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: shared-app-config
+            - configMapRef:
+                name: {{ include "front-ui-service.fullname" . }}
             - secretRef:
                 name: shared-app-secrets
             - secretRef:

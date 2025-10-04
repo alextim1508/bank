@@ -16,9 +16,6 @@ database:
   username: postgres
   password: postgres
 
-kafka:
-  bootstarServers: "http://{{ .Release.Name }}-kafka:9092"
-
 service:
   type: ClusterIP
   port: 8080 

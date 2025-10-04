@@ -6,5 +6,6 @@ metadata:
     {{- include "exchange-service.labels" . | nindent 4 }}
 
 data:
+  APPLICATION_NAME: exchange
+
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url  . | required "database.url is required" }}
-  KAFKA_BOOTSTRAP_SERVERS: {{ tpl .Values.kafka.bootstarServers  .  | required "kafka.bootstarServers is required" }}

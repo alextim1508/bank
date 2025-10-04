@@ -19,3 +19,5 @@ data:
   SECURITY_OAUTH2_CLIENT_JWT_ISSUER_URI: http://{{ .Release.Name }}-keycloak/realms/bank
 
   ZIPKIN_ENDPOINT: http://{{ .Release.Name }}-zipkin:9411/api/v2/spans
+
+  KAFKA_BOOTSTRAP_SERVERS: http://{{ .Release.Name }}-kafka:9092

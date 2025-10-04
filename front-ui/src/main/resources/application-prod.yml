@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: front-ui
+    name: ${APPLICATION_NAME}
   config:
     import: classpath:application-common.yml
   security:

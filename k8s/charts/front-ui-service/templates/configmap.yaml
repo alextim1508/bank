@@ -4,3 +4,6 @@ metadata:
   name: {{ include "front-ui-service.fullname" . }}
   labels:
     {{- include "front-ui-service.labels" . | nindent 4 }}
+
+data:
+  APPLICATION_NAME: front-ui

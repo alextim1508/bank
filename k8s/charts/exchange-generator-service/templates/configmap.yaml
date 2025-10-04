@@ -6,5 +6,6 @@ metadata:
     {{- include "exchange-generator-service.labels" . | nindent 4 }}
     
 data:
+  APPLICATION_NAME: exchange-generator
+
   SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_TOKEN_URL: {{ tpl .Values.oauth2.clientRegistrationBankTokenUrl  .  | required "oauth2.clientRegistrationBankTokenUrl is required" }}
-  KAFKA_BOOTSTRAP_SERVERS: {{ tpl .Values.kafka.bootstarServers  .  | required "kafka.bootstarServers is required" }}

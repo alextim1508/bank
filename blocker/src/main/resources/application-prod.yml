@@ -1,6 +1,6 @@
 spring:
   application:
-    name: blocker
+    name: ${APPLICATION_NAME}
   config:
     import: classpath:application-common.yml
 

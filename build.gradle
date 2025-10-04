@@ -66,6 +66,10 @@ subprojects { project ->
 		//========== Web ==========
 		implementation 'org.springframework.boot:spring-boot-starter'
 
+		//========== Messaging ==========
+		implementation 'org.springframework.kafka:spring-kafka'
+		implementation("com.github.danielwegener:logback-kafka-appender:0.2.0-RC2")
+
 		//========== Monitoring ==========
 		implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		implementation 'io.micrometer:micrometer-tracing-bridge-brave'

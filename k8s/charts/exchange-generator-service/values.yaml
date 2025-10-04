@@ -12,9 +12,6 @@ oauth2:
   clientRegistrationBankTokenUrl: "http://{{ .Release.Name }}-keycloak/realms/bank/protocol/openid-connect/token"
   clientSecret: HlsMefVUQWzRUZac1sxSCOhHSRM46SnS
 
-kafka:
-  bootstarServers: "http://{{ .Release.Name }}-kafka:9092"
-
 service: 
   type: ClusterIP
   port: 8080 
