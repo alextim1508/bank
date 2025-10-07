@@ -140,3 +140,14 @@ http://localhost:3000
 ```
 
 ![](screenshots/9.jpg)
+
+##### Logstash/Elasticsearch/Kibana
+Для визуализации логов можно использовать Kibana 
+
+```bash
+kubectl port-forward svc/mybank-grafana 3000:3000
+```
+
+```bash
+http://localhost:3000
+```

@@ -116,3 +116,20 @@ dependencies:
     repository: "https://grafana.github.io/helm-charts"
     alias: grafana
     condition: grafana.enabled
+
+  - name: logstash
+    version: 8.5.1
+    repository: "https://helm.elastic.co"
+    alias: logstash
+    condition: logstash.enabled
+
+  - name: elasticsearch
+    version: 8.5.1
+    repository: "https://helm.elastic.co"
+    alias: elasticsearch
+    condition: elasticsearch.enabled
+
+  - name: kibana
+    version: 8.5.1
+    repository: "https://helm.elastic.co"
+    alias: kibana

@@ -462,3 +462,107 @@ grafana:
   persistence:
     enabled: true
     size: 1Gi
+
+elasticsearch:
+  enabled: true
+  tls:
+    enabled: false
+  masterService: "elasticsearch"
+  imageTag: 8.18.0
+  replicas: 1
+  minimumMasterNodes: 1
+  esJavaOpts: "-Xmx1g -Xms1g"
+  clusterHealthCheckParams: ""
+  secret:
+    enabled: true
+    password: "elactic"
+  esConfig:
+    elasticsearch.yml: |
+      xpack.security.http.ssl.enabled: false
+      xpack.security.enabled: true
+
+
+logstash:
+  enabled: true
+  imageTag: 8.18.0
+  esJavaOpts: "-Xmx1g -Xms1g"
+  extraEnvs:
+    - name: LOGSTASH_SETTING_XPACK_MONITORING_ENABLED
+      value: "false"
+  logstashConfig:
+    logstash.yml: |
+      xpack.monitoring.enabled: false
+      xpack.monitoring.elasticsearch.hosts: ["https://elasticsearch:9200"]      
+      xpack.monitoring.elasticsearch.ssl.verification_mode: "none"
+  logstashPipeline:
+    monitoring.conf: |
+      input {
+        kafka {
+          bootstrap_servers => "{{ .Release.Name }}-kafka:9092"
+          topics => ["account-logs", "blocker-logs", "cash-logs", "transfer-logs", "front-ui-logs", "exchange-logs", "exchange-generator-logs", "notification-logs"]
+          group_id => "logstash-group"
+        }
+      }
+      filter {
+        grok {
+          match => [
+            "message",
+            "%{TIMESTAMP_ISO8601:time} \[%{DATA:thread}\] %{LOGLEVEL:log-level} %{DATA:logger} \[app:%{DATA:app}, trace:%{DATA:traceId}, span:%{DATA:spanId}\] - %{GREEDYDATA:msg}"
+          ]
+        }
+      }
+      output {
+        elasticsearch {
+          hosts => ["https://elasticsearch:9200"]
+          index => "logs-%{+dd.MM.YYYY}"
+          retry_on_conflict => 3
+          action => "create"
+          ssl_enabled => true
+          ssl_verification_mode => "none"
+          user => "elastic"
+          password => "elactic"
+        }
+      }
+
+kibana:
+  enabled: true
+  replicaCount: 1
+  elasticsearchHosts: "http://elasticsearch-master:9200"
+  healthCheckPath: "/api/status"
+
+  # Отключаем pre-install job и SSL
+  createKibanaToken: false
+
+  # Отключаем TLS/SSL
+  elasticsearch.tls.enabled: false
+
+  # Настройки для отключения SSL
+  elasticsearch.ssl:
+    verificationMode: none
+    certificateAuthorities: ""
+    enabled: false
+
+  # Environment для отключения SSL
+  extraEnvs:
+    - name: ELASTICSEARCH_HOSTS
+      value: "http://elasticsearch-master:9200"
+    - name: ELASTICSEARCH_SSL_VERIFICATIONMODE
+      value: "none"
+    - name: ELASTICSEARCH_SSL_ENABLED
+      value: "false"
+    - name: NODE_TLS_REJECT_UNAUTHORIZED
+      value: "0"
+
+  extraVolumeMounts: []
+  extraVolumes: []
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  service:
+    type: NodePort
+    nodePort: 32000
