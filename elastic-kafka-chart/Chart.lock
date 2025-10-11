@@ -1,0 +1,15 @@
+dependencies:
+- name: elasticsearch
+  repository: https://helm.elastic.co
+  version: 8.5.1
+- name: logstash
+  repository: https://helm.elastic.co
+  version: 8.5.1
+- name: kibana
+  repository: https://helm.elastic.co
+  version: 8.5.1
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 32.4.3
+digest: sha256:ef1f3cfe89f8465bf6cff945a8e898a91e147bd24b4d3a88a8f1c2878c18f9d3
+generated: "2025-10-10T23:57:36.040538+03:00"
