@@ -1,0 +1,24 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+Components deployed:
+{{- if .Values.elasticsearch.enabled }}
+- Elasticsearch is running at http://{{ .Release.Name }}-elasticsearch:9200
+{{- end }}
+{{- if .Values.kibana.enabled }}
+- Kibana is running at http://{{ .Release.Name }}-kibana:5601
+{{- end }}
+{{- if .Values.logstash.enabled }}
+- Logstash is running
+{{- end }}
+{{- if .Values.kafka.enabled }}
+- Kafka is running at {{ .Release.Name }}-kafka:9092
+{{- end }}
+
+You can access the services from within your cluster using the service names.

@@ -1,79 +1,64 @@
-# Default values for elastic-kafka-chart.
+# Production values for elastic-kafka-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# Global Docker image parameters
-# Please, note that this will override the image parameters, including dependencies, configured to use the global value
-# Current available global Docker image parameters: imageRegistry and imagePullSecrets
-# global:
-#   imageRegistry: myRegistryName
-#   imagePullSecrets:
-#     - myRegistryKeySecretName
-#   storageClass: myStorageClass
-
-# Enable/disable the different components
 elasticsearch:
   enabled: true
-  # Elasticsearch cluster name
   clusterName: "elasticsearch"
-  # Elasticsearch node roles
+  replicas: 3
   roles:
     master: "true"
     ingest: "true"
     data: "true"
-  # Elasticsearch replica count
-  replicas: 1
-  # Elasticsearch image
   image: "docker.elastic.co/elasticsearch/elasticsearch"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  # Resource limits and requests for the elasticsearch container
   resources:
     limits:
-      cpu: 1000m
-      memory: 2Gi
+      cpu: 2000m
+      memory: 4Gi
     requests:
-      cpu: 100m
-      memory: 2Gi
-  # Service configuration
+      cpu: 1000m
+      memory: 4Gi
   service:
     type: ClusterIP
     port: 9200
   # Probe configuration
   probes:
-    livenessInitialDelaySeconds: 30
-    readinessInitialDelaySeconds: 10
-  # Elasticsearch configuration
+    livenessInitialDelaySeconds: 60
+    readinessInitialDelaySeconds: 30
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    resources:
+      requests:
+        storage: 30Gi
   esConfig:
     elasticsearch.yml: |
       xpack.security.enabled: false
       xpack.security.http.ssl.enabled: false
       xpack.security.transport.ssl.enabled: false
       xpack.monitoring.collection.enabled: false
+      cluster.routing.allocation.disk.threshold_enabled: false
 
 kibana:
   enabled: true
-  # Kibana image
   image: "docker.elastic.co/kibana/kibana"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  # Resource limits and requests for the kibana container
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
     requests:
-      cpu: 100m
-      memory: 512Mi
-  # Service configuration
+      cpu: 500m
+      memory: 1Gi
   service:
     type: ClusterIP
     port: 5601
   # Probe configuration
   probes:
-    livenessInitialDelaySeconds: 30
-    readinessInitialDelaySeconds: 10
-  # Kibana configuration
+    livenessInitialDelaySeconds: 60
+    readinessInitialDelaySeconds: 30
   kibanaConfig:
     kibana.yml: |
       server.host: "0.0.0.0"
@@ -82,33 +67,30 @@ kibana:
 
 logstash:
   enabled: true
-  # Logstash image
   image: "docker.elastic.co/logstash/logstash"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  # Resource limits and requests for the logstash container
   resources:
     limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
       cpu: 1000m
       memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 512Mi
-  # Service configuration
   service:
     type: ClusterIP
     port: 9600
-  # Logstash configuration
   logstashConfig:
     logstash.yml: |
       http.host: "0.0.0.0"
       xpack.monitoring.enabled: false
-  # Logstash pipeline configuration
   logstashPipeline:
     logstash.conf: |
       input {
-        beats {
-          port => 5044
+        kafka {
+          bootstrap_servers => "{{ .Release.Name }}-kafka:9092"
+          topics => ["logs"]
+          group_id => "logstash"
         }
       }
       
@@ -130,32 +112,31 @@ logstash:
 
 kafka:
   enabled: true
-  # Kafka image
   image:
     registry: docker.io
     repository: bitnamilegacy/kafka
     tag: "4.0.0-debian-12-r10"
   imagePullPolicy: "IfNotPresent"
-  # Kafka replica count
-  replicaCount: 1
-  # Resource limits and requests for the kafka container
+  replicaCount: 3
   resources:
     limits:
       cpu: 1000m
-      memory: 1Gi
+      memory: 2Gi
     requests:
-      cpu: 100m
-      memory: 512Mi
-  # Kafka configuration
+      cpu: 500m
+      memory: 1Gi
   config:
-    num.partitions: 1
-    offsets.topic.replication.factor: 1
-    transaction.state.log.replication.factor: 1
-    transaction.state.log.min.isr: 1
+    num.partitions: 3
+    default.replication.factor: 3
+    offsets.topic.replication.factor: 3
+    transaction.state.log.replication.factor: 3
+    transaction.state.log.min.isr: 2
   # Kafka node configuration
   nodeId: 1
   controllerQuorumVoters: "1@localhost:9093"
-  # Service configuration
   service:
     type: ClusterIP
     port: 9092
+  persistence:
+    enabled: true
+    size: 10Gi
