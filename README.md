@@ -145,9 +145,11 @@ http://localhost:3000
 Для визуализации логов можно использовать Kibana 
 
 ```bash
-kubectl port-forward svc/mybank-grafana 3000:3000
+kubectl port-forward svc/mybank-kibana 5601:5601
 ```
 
 ```bash
-http://localhost:3000
+http://localhost:5601
 ```
+
+![](screenshots/10.jpg)

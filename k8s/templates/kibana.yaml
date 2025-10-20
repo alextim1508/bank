@@ -1,0 +1,73 @@
+{{- if .Values.kibana.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-kibana
+  labels:
+    app: kibana
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+    - port: {{ .Values.kibana.service.port }}
+      targetPort: 5601
+  selector:
+    app: kibana
+    release: "{{ .Release.Name }}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kibana
+  labels:
+    app: kibana
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: kibana
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: kibana
+          image: "{{ .Values.kibana.image }}:{{ .Values.kibana.imageTag }}"
+          imagePullPolicy: {{ .Values.kibana.imagePullPolicy | default "IfNotPresent" }}
+          env:
+            - name: ELASTICSEARCH_HOSTS
+              value: "http://{{ .Release.Name }}-elasticsearch:9200"
+            - name: SERVER_HOST
+              value: "0.0.0.0"
+            - name: XPACK_SECURITY_ENABLED
+              value: "false"
+          ports:
+            - containerPort: 5601
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: 5601
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.kibana.probes.livenessInitialDelaySeconds | default 30 }}
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: 5601
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.kibana.probes.readinessInitialDelaySeconds | default 10 }}
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+{{ toYaml .Values.kibana.resources | indent 10 }}
+{{- end }}
