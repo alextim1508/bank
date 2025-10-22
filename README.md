@@ -62,10 +62,11 @@ git clone https://github.com/alextim1508/bank
 
 Для запуска приложения необходимо установить следующие компоненты:
 
+- Jenkins
+- Docker
 - Kubectl
 - Helm
 - Minikube
-- Jenkins
 
 После установки указанных компонентов необходимо запустить Minikube:
 - minikube start --vm-driver=docker --cpus=8 --memory=8192
@@ -73,10 +74,21 @@ git clone https://github.com/alextim1508/bank
 - minikube addons enable storage-provisioner
 - minikube addons enable default-storageclass
 
-Далее заходим в Jenkins и добавляем в Blue Ocean Git проект из файла со ссылкой на текущий проект
-Jenkins подхватит Jenkinsfile и запустит пайплайн по сборке, установке и запуску необходимых компонентов приложения.
+Запустить заходим в Jenkins и добавляем плагин Blue Ocean
 
-После успешного выполнения пайплайна необходимо убедиться, что все поды успешно стартовали
+```bash
+java -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true -jar jenkins.war
+```
+
+Создать pipeline из локального Git проекта
+
+```bash
+http://localhost:8080/blue/organizations/jenkins/pipelines/
+```
+
+![](screenshots/11.jpg)
+
+После успешного выполнения pipeline необходимо убедиться, что все поды успешно стартовали
 
 ```bash
 kubectl get pods
