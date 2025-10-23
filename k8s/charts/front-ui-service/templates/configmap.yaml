@@ -6,4 +6,4 @@ metadata:
     {{- include "front-ui-service.labels" . | nindent 4 }}
 
 data:
-  APPLICATION_NAME: front-ui
+  APPLICATION_NAME: {{ .Values.applicationName | default "front-ui" }}

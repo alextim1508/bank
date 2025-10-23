@@ -1,3 +1,5 @@
+applicationName: cash
+
 image:
   repository: cash-service
   pullPolicy: IfNotPresent
@@ -30,4 +32,21 @@ autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
-  targetCPUUtilizationPercentage: 80  
+  targetCPUUtilizationPercentage: 80
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "200m"
+  limits:
+    memory: "1Gi"
+    cpu: "400m"
+
+startupProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  failureThreshold: 300
+  timeoutSeconds: 5

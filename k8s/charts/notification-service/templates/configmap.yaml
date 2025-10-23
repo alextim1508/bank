@@ -6,5 +6,6 @@ metadata:
     {{- include "notification-service.labels" . | nindent 4 }}
 
 data:
-  APPLICATION_NAME: notification
+  APPLICATION_NAME: {{ .Values.applicationName | default "notification" }}
+
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url  . | required "database.url is required" }}

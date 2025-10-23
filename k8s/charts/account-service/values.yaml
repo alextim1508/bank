@@ -1,3 +1,5 @@
+applicationName: account
+
 image:
   repository: account-service
   pullPolicy: IfNotPresent
@@ -37,9 +39,18 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
   requests:
-    cpu: 200m
-    memory: 256Mi
+    memory: "512Mi"
+    cpu: "200m"
+  limits:
+    memory: "1Gi"
+    cpu: "400m"
+
+startupProbe:
+  httpGet:
+    path: /actuator/health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  failureThreshold: 300
+  timeoutSeconds: 5

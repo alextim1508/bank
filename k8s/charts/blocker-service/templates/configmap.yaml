@@ -6,7 +6,7 @@ metadata:
     {{- include "blocker-service.labels" . | nindent 4 }}
 
 data:
-  APPLICATION_NAME: blocker
+  APPLICATION_NAME: {{ .Values.applicationName | default "blocker" }}
 
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url  . | required "database.url is required"  }}
   SPRING_DATASOURCE_USERNAME: "{{ .Values.database.username | required "database.username is required"  }}"

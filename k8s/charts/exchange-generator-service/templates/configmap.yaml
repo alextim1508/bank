@@ -6,6 +6,6 @@ metadata:
     {{- include "exchange-generator-service.labels" . | nindent 4 }}
     
 data:
-  APPLICATION_NAME: exchange-generator
+  APPLICATION_NAME: {{ .Values.applicationName | default "exchange-generator" }}
 
   SECURITY_OAUTH2_CLIENT_REGISTRATION_BANK_TOKEN_URL: {{ tpl .Values.oauth2.clientRegistrationBankTokenUrl  .  | required "oauth2.clientRegistrationBankTokenUrl is required" }}

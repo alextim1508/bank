@@ -6,7 +6,8 @@ metadata:
     {{- include "account-service.labels" . | nindent 4 }}
 
 data:
-  APPLICATION_NAME: account
+  APPLICATION_NAME: {{ .Values.applicationName | default "account" }}
+
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url . | required "database.url is required" }}
 
   REDIS_HOST: {{ tpl .Values.redis.host  . | required "redis.host is required" }}

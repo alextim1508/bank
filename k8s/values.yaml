@@ -97,7 +97,14 @@ account-db:
     username: "postgres"
     password: "postgres"
     database: "account_db"
-    
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
+
 block-token-list-db:
   enabled: true
   image:
@@ -112,6 +119,13 @@ block-token-list-db:
       enabled: false
   service:
     port: 6379
+  resources:
+    requests:
+      memory: "32Mi"
+      cpu: "25m"
+    limits:
+      memory: "64Mi"
+      cpu: "50m"
     
 suspicious-operation-db:
   enabled: true
@@ -123,6 +137,13 @@ suspicious-operation-db:
     database: suspicious_operation_db
     username: postgres
     password: "postgres"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
     
 operation-count-db:
   enabled: true
@@ -138,6 +159,13 @@ operation-count-db:
       enabled: false
   service:
     port: 6379
+  resources:
+    requests:
+      memory: "32Mi"
+      cpu: "25m"
+    limits:
+      memory: "64Mi"
+      cpu: "50m"
     
 cash-db:
   enabled: true
@@ -149,6 +177,13 @@ cash-db:
     database: cash_db
     username: postgres
     password: "postgres"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
 transfer-db:
   enabled: true
@@ -160,6 +195,13 @@ transfer-db:
     database: transfer_db
     username: postgres
     password: "postgres"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
    
 exchange-db:
   enabled: true
@@ -171,6 +213,13 @@ exchange-db:
     database: exchange_db
     username: postgres
     password: "postgres"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
 notification-db:
   enabled: true
@@ -182,6 +231,13 @@ notification-db:
     database: notification_db
     username: postgres
     password: "postgres"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
 keycloak:
   enabled: true
@@ -234,12 +290,12 @@ keycloak:
   startupProbe:
     enabled: false
   resources:
-    limits:
-      memory: 1Gi
-      cpu: 500m
     requests:
-      memory: 512Mi
-      cpu: 200m
+      memory: "512Mi"
+      cpu: "200m"
+    limits:
+      memory: "1Gi"
+      cpu: "400m"
 
 kafka:
   enabled: true
@@ -247,11 +303,11 @@ kafka:
     registry: docker.io
     repository: bitnamilegacy/kafka
     tag: "4.0.0-debian-12-r10"
-  replicaCount: 2
+  replicaCount: 1
   topics:
     - name: rates-topic
       partitions: 1
-      replicas: 2
+      replicas: 1
   listeners:
     client:
       port: 9092
@@ -265,19 +321,32 @@ kafka:
 
   externalAccess:
     enabled: false
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "100m"
+    limits:
+      memory: "768Mi"
+      cpu: "200m"
 
 zipkin:
   replicaCount: 1
   service:
     type: ClusterIP
     port: 9411
+  resources:
+    requests:
+      memory: "384Mi"
+      cpu: "100m"
+    limits:
+      memory: "768Mi"
+      cpu: "200m"
 
 prometheus:
   server:
     service:
       type: ClusterIP
       servicePort: 9090
-
   extraScrapeConfigs: |
     - job_name: 'account-service'
       metrics_path: '/actuator/prometheus'
@@ -388,6 +457,13 @@ prometheus:
               annotations:
                 summary: "Не обновлялся курс валют"
                 description: "Курс валют не обновлялся последние 10 минут"
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
 grafana:
   enabled: true
@@ -413,6 +489,13 @@ grafana:
           access: proxy
           url: 'http://{{ .Release.Name }}-prometheus-server:9090'
           isDefault: true
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
   extraVolumeMounts:
     - name: custom-dashboards
@@ -470,13 +553,6 @@ elasticsearch:
   image: "docker.elastic.co/elasticsearch/elasticsearch"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
-    requests:
-      cpu: 100m
-      memory: 2Gi
   service:
     type: ClusterIP
     port: 9200
@@ -489,19 +565,19 @@ elasticsearch:
       xpack.security.http.ssl.enabled: false
       xpack.security.transport.ssl.enabled: false
       xpack.monitoring.collection.enabled: false
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "200m"
 
 logstash:
   enabled: true
   image: "docker.elastic.co/logstash/logstash"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 512Mi
   service:
     type: ClusterIP
     port: 9600
@@ -533,19 +609,19 @@ logstash:
         action => "create"
       }
     }
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "100m"
 
 kibana:
   enabled: true
   image: "docker.elastic.co/kibana/kibana"
   imageTag: "8.5.1"
   imagePullPolicy: "IfNotPresent"
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 512Mi
   service:
     type: ClusterIP
     port: 5601
@@ -557,3 +633,10 @@ kibana:
       server.host: "0.0.0.0"
       elasticsearch.hosts: ["http://{{ .Release.Name }}-elasticsearch:9200"]
       xpack.security.enabled: false
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "25m"
+    limits:
+      memory: "128Mi"
+      cpu: "50m"

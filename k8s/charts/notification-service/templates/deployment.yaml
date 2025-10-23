@@ -50,6 +50,20 @@ spec:
                 sleep 5
               done
               echo "Database notification-db is ready!"
+
+              echo "Waiting for zipkin to be ready..."
+              while ! nc -z {{ .Release.Name }}-zipkin 9411; do
+                echo "Waiting for zipkin to be ready..."
+                sleep 5
+              done
+              echo "Zipkin is ready!"
+
+              echo "Waiting for kafka to be ready..."
+              while ! nc -z {{ .Release.Name }}-kafka 9092; do
+                echo "Waiting for kafka to be ready..."
+                sleep 5
+              done
+              echo "Kafka is ready!"
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

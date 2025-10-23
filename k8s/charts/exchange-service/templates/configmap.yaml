@@ -6,6 +6,6 @@ metadata:
     {{- include "exchange-service.labels" . | nindent 4 }}
 
 data:
-  APPLICATION_NAME: exchange
+  APPLICATION_NAME: {{ .Values.applicationName | default "exchange" }}
 
   SPRING_DATASOURCE_URL: {{ tpl .Values.database.url  . | required "database.url is required" }}
