@@ -52,6 +52,9 @@ class CashServiceImplTest {
     @MockitoBean
     private ATMService atmService;
 
+    @MockitoBean
+    private CashMetricsService cashMetricsService;
+
     private DepositRequest depositRequest;
     private WithdrawRequest withdrawRequest;
 
@@ -72,6 +75,7 @@ class CashServiceImplTest {
         when(notificationServiceClient.sendNotification(any(NotificationRequest.class)))
                 .thenReturn(ResponseEntity.ok(ApiResponse.success(new NotificationResponse("ivan"))));
 
+        doNothing().when(cashMetricsService).incrementCashOperation(anyString(), anyString());
     }
 
     @Test

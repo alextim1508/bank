@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: bank-exchange-service
   datasource:
     url: jdbc:postgresql://localhost:5438/exchange-db
     username: postgres

@@ -48,6 +48,9 @@ class BlockerServiceTest {
     @MockitoBean
     private ValueOperations<String, String> valueOps;
 
+    @MockitoBean
+    private BlockerMetricsService blockerMetricsService;
+
     @Autowired
     private BlockerService blockerService;
 
@@ -84,6 +87,8 @@ class BlockerServiceTest {
             assertThat(result).isFalse();
             verify(suspiciousOperationRepository, never()).save(any(SuspiciousOperation.class));
         }
+
+        doNothing().when(blockerMetricsService).incrementTransferBlocked(anyString(), anyString());
     }
 
 

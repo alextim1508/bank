@@ -1,7 +1,6 @@
 spring:
-  cloud:
-    config:
-      enabled: false
+  application:
+    name: bank-notification-service
 
   datasource:
     url: jdbc:postgresql://localhost:5439/notification-db

@@ -48,6 +48,9 @@ class BalanceServiceTest {
     @MockitoBean
     private NotificationServiceClient notificationServiceClient;
 
+    @MockitoBean
+    private BalanceMetricsService balanceMetricsService;
+
     @Autowired
     private BalanceServiceImpl balanceService;
 
@@ -82,6 +85,9 @@ class BalanceServiceTest {
 
         when(notificationServiceClient.sendNotification(any(NotificationRequest.class)))
                 .thenReturn(ResponseEntity.ok( ApiResponse.success(new NotificationResponse("ivan_ivanov"))));
+
+        doNothing().when(balanceMetricsService).incrementBalanceOperation(anyString(), anyString());
+        doNothing().when(balanceMetricsService).incrementBalanceOperation(anyString(), anyString(), anyString());
     }
 
     @Test

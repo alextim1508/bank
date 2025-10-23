@@ -22,7 +22,7 @@ public class CashMetricsService {
                 .tag("operation", operation)
                 .tag("result", result)
                 .register(meterRegistry)
-                .increment(); // Увеличиваем счетчик на 1
+                .increment();
         log.debug("Incremented cash operation counter for operation: {}, result: {}", operation, result);
     }
 }

@@ -1,7 +1,6 @@
 spring:
-  cloud:
-    config:
-      enabled: false
+  application:
+    name: bank-transfer-service
   datasource:
     url: jdbc:postgresql://localhost:5436/transfer-db
     username: postgres

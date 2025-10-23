@@ -57,6 +57,8 @@ class TransferServiceImplTest {
     @MockitoBean
     private TransferOperationRepository transferOperationRepository;
 
+    @MockitoBean
+    private TransferMetricsService transferMetricsService;
 
     private InternalTransferRequest internalRequest;
     private ExternalTransferRequest externalRequest;
@@ -92,6 +94,9 @@ class TransferServiceImplTest {
                         op.getConvertedAmount().compareTo(new BigDecimal("100")) == 0 &&
                         op.getFromExchangeRateToRub() == null
         ));
+
+        doNothing().when(transferMetricsService).incrementTransferOperation(anyString(), anyString());
+        doNothing().when(transferMetricsService).incrementTransferOperation(anyString(), anyString(), anyString());
     }
 
 

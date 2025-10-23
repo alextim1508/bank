@@ -31,8 +31,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = {AuthServiceImpl.class})
 @ActiveProfiles("test")
@@ -49,6 +49,9 @@ class AuthServiceTest {
 
     @MockitoBean
     private JwtServiceImpl jwtService;
+
+    @MockitoBean
+    private AuthMetricsService authMetricsService;
 
     @Autowired
     private AuthServiceImpl authService;
@@ -70,6 +73,9 @@ class AuthServiceTest {
 
         when(notificationServiceClient.sendNotification(any(NotificationRequest.class)))
                 .thenReturn(ResponseEntity.ok(ApiResponse.success(new NotificationResponse("ivan_ivanov"))));
+
+        doNothing().when(authMetricsService).incrementLoginSuccess(anyString());
+        doNothing().when(authMetricsService).incrementLoginFailure(anyString());
     }
 
     @Test

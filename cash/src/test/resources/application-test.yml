@@ -1,11 +1,6 @@
 spring:
-  cloud:
-    consul:
-      enabled: false
-    discovery:
-      enabled: false
-    config:
-      enabled: false
+  application:
+    name: bank-cash-service
 
   datasource:
     url: jdbc:postgresql://localhost:5435/cash-db

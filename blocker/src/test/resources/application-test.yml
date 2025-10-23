@@ -1,7 +1,6 @@
 spring:
-  cloud:
-    config:
-      enabled: false
+  application:
+    name: bank-blocker-service
 
   datasource:
     url: jdbc:postgresql://localhost:5437/suspicious-operation-db

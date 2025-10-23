@@ -1,6 +1,7 @@
 package com.alextim.bank.cache.controller;
 
 
+import com.alextim.bank.cache.service.CashMetricsService;
 import com.alextim.bank.common.client.*;
 import com.alextim.bank.common.dto.ApiResponse;
 import com.alextim.bank.common.dto.auth.TokenStatusResponse;
@@ -25,6 +26,7 @@ import java.math.RoundingMode;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -57,6 +59,9 @@ public class CashWithBlockerClientControllerTest extends AbstractControllerTestC
     private ClientRegistrationRepository clientRegistrationRepository;
     @MockitoBean
     private JwtDecoder jwtDecoder;
+
+    @MockitoBean
+    private CashMetricsService cashMetricsService;
 
     @BeforeEach
     public void setUp() {
@@ -110,6 +115,8 @@ public class CashWithBlockerClientControllerTest extends AbstractControllerTestC
                 });
 
         when(oAuth2TokenClient.getBearerToken(anyString(), anyString())).thenReturn("bearer");
+
+        doNothing().when(cashMetricsService).incrementCashOperation(anyString(), anyString());
     }
 
     @Test
